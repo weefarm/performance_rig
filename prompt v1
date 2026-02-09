@@ -1,0 +1,96 @@
+<!-- @format -->
+
+We're going to define a live performance-geared guitar effect control and
+guitar+vocal looper rig. It will be fairly complex, so you should start in
+planning mode.
+
+First, the inventory of equipment available to use:
+
+- iConnectivity mioXM midi interface (see owner's manual in HardwareUserManuals)
+- Voodoo labs Ground Control Pro (see owners manual in HardwareUserManuals)
+- Behringer FCB1010_WINO2 (FCB1010 with UNO2 Firmware & WINO2 extension module
+  installed; see documents in HardwareUserManuals)
+- Stock Behringer FCB1010 - no modifications (See manual in HardwareUserManuals)
+- NeuralDSP QuadCortex - (See user manual in HardwareUserManuals)
+- HeadRush Prime - (See user manual in HardwareUserManuals)
+- Hologram Electronics Microcosm - (See manual in HardwareUserManuals)
+
+I would like to create a setup to integrate as many of these items as necessary.
+My primary design considerations for the setup include:
+
+- limited memory available for programming WINO2
+- primary guitar tone effects (amp clones/overdrives/distortions, scenes, etc.
+  ambient looping using QC or microcosm via fx loop) handled by QuadCortex,
+  primarily time-based effects/delay and main performance looping handled by HRP
+- looper: it would be great to integrate the QC & HRP's looper controls on one
+  board/bank, such that I could start recording/overdubbing/playing/etc. for
+  either looper from a single visible bank of footswitches. This should be
+  possible given the flexibility of the mioXM to reinterpret midi messages, the
+  flexibility of the WINO2's programming, and the switch real estate the
+  GroundControl Pro offers.
+- My intention is to primarily use the hrp looper for main song structure
+  (guitar+vocals) since it will hold multiple layers/loops.
+    - the QC will provide an option to create smaller/shorter "part" loops or
+      one shots, so that I can set a loop running on the QC, play along or sing
+      along to it while capturing both its loop and the live additions on the
+      HRP..
+- I want a dedicated switch for activating the microcosm, with a momentary mode
+  and a latching mode available.
+- For the QC's expression pedals, I will use:
+
+* one of the QC's analog expression pedal inputs to control wah
+* the other of the QC's analog expression pedal inputs to control master rig
+  volume (main outs)
+
+- The other expression pedals available include:
+
+* 2 on FCB1010 Stock
+* 2 on FCB1010 wino2
+* 1 built in to the HRP, which could be used to control either its mix of
+  dry/effected signal for the time-based delay/reverb/etc OR the mix of live
+  signal vs. looper signal to its output. Parameters that would likely get
+  assigned to expression pedals include:
+* FX Loop (microcosm) mix - probably one of the QC's FX loops
+* QC FXLoop 2 (HRP) mix
+* Others undecided at this time, but could be individual loop volume(s),
+  loop-live mix levels, etc.
+
+You will need to plan:
+
+- the connections between various pieces of equipment such that midi information
+  is sent to the right device on the right channel at the right time when
+  footswitches are pressed
+- the setup of the mioXM to handle relaying altered midi from the GCPro and/or
+  stock FCB1010 as needed to provide the correct midi input to the mapped
+  devices
+- the programming of the FCB1010 WINO2 to stay within its memory limits (see
+  fcb1010_cleaned.txt for a revised version of my original attempt at
+  implementation)
+- proper state considerations for led on/off to indicate
+  record/overdub/play/etc. with respect to the loopers (focusing on controlling
+  the HRP's ability to create and modify song-structure level looping) and
+  effect off/on with respect to the various mapped effects
+- possible daisy-chaining of effects to stay within the number of midi in/out
+  DIN ports available, or alternative methods of MIDI connectivity as available
+- a strategy to make the code pertaining to various components of the rig as
+  readable and editable as possible, with minimal hard-coding of parameters that
+  could be coded as variables instead, whenever possible
+- a workflow with easy accessibility for:
+
+* QC scenes and stomps
+* HRP effects & their adjustment paremeters
+* QC looper & HRP (primary) looper
+
+- minimized number of keypresses (it is hard to play while "tapdancing") for
+  navigation, bank switching, etc.
+- momentary and latching modes for at least microcosm and looper, where
+  possible, as well as for HRP effects
+
+So the overall gist is QC as a guitar effects unit, with individual QC FX loops
+containing :
+
+- the microcosm & the QC's looper for ambient soundscape building
+- HRP for vocal effects & overall song performance looping
+
+And midi control off the entire rig using the availbe routing options and
+switching hardware.
