@@ -14,14 +14,14 @@
 │                                                                             │
 │   ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐     │
 │   │  Stock FCB1010   │    │  FCB1010 WINO2   │    │ Ground Ctrl Pro  │     │
-│   │    (backup)      │    │  (primary ctrl)  │    │  (scenes/stomps) │     │
+│   │  (HRP params)    │    │  (primary ctrl)  │    │  (scenes/stomps) │     │
 │   │                  │    │                  │    │                  │     │
 │   │ [MIDI OUT]───────┼──▶│[MIDI IN] [MIDI OUT]────┐    [MIDI OUT]   │     │
 │   └──────────────────┘    └──────────────────┘    │    └─────┬──────┘     │
 │         ▲ EXP A,B              ▲ EXP A,B          │          │            │
 │         │                      │                  │          │            │
-│         │    (future use)      │  (HRP mix,       │          │            │
-│         │                      │   FX loop mix)   │          │            │
+│         │   (HRP knobs)    │  (HRP mix,       │          │            │
+│         │                  │   FX loop mix)   │          │            │
 │                                                   │          │            │
 │   ═══════════════════════════════════════════════│══════════│════════════ │
 │                                                   │          │            │
@@ -95,7 +95,7 @@
 | WINO2 EXP A   | FCB1010 WINO2 internal    | Via MIDI to HRP | CC 11 (Mix)         |
 | WINO2 EXP B   | FCB1010 WINO2 internal    | Via MIDI to HRP | CC 12 (FX Loop Mix) |
 | HRP Built-in  | On HeadRush Prime         | Internal        | User assignable     |
-| Stock EXP A/B | Stock FCB1010             | _(Future use)_  | —                   |
+| Stock EXP A/B | Stock FCB1010             | Via MIDI to HRP | CC 61, 62           |
 
 ## Notes
 
