@@ -22,9 +22,9 @@ Microcosm).
 | ------------- | ----------- | -------------- | ----------------- |
 | Ch 1          | DIN OUT 1   | Ch 1           | QC Control        |
 | Ch 2          | DIN OUT 2   | Ch 2           | HRP Control       |
-| Ch 3          | DIN OUT 2   | Ch 3           | Microcosm Control |
+| Ch 3          | DIN OUT 3   | Ch 3           | Microcosm Control |
 | Ch 4          | DIN OUT 1   | Ch 1           | QC Scenes/Stomps  |
-| Ch 4          | DIN OUT 2   | Ch 3           | Microcosm Bypass  |
+| Ch 4          | DIN OUT 3   | Ch 3           | Microcosm Bypass  |
 
 ### DIN IN 1 REMAP RULES (Zero-Config Trunk)
 
