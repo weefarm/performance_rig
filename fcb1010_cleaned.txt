@@ -125,6 +125,7 @@ VAR $CC_HRP_UNPEEL = 123
 VAR $CC_HRP_TAP    = 64
 
 VAR $CC_MICRO_BYP  = 102
+VAR $CC_MICRO_TAP  = 93    // Standard Hologram Tap CC
 
 // ******************************************************************
 // INITIALIZATION
@@ -145,14 +146,25 @@ TRIGGER_CLICK TAP_TEMPO =
 {
   SendMidi QC CtrlChange $CC_QC_TAP 127
   SendMidi HRP CtrlChange $CC_HRP_TAP 127
+  SendMidi MICRO CtrlChange $CC_MICRO_TAP 127
 }
 
 TRIGGER_CLICK GLOBAL_STOP = 
 {
-  SendMidi QC CtrlChange $CC_QC_PLAY 0  // QC Looper Stop
-  SendMidi HRP CtrlChange $CC_HRP_PLAY 0 // HRP Looper Stop
+  SendMidi QC CtrlChange $CC_QC_PLAY 0   // QC Looper Stop
+  SendMidi HRP CtrlChange $CC_HRP_PLAY 0  // HRP Looper Stop
+  SendMidi MICRO CtrlChange 31 127       // Microcosm Stop
   SwitchOff QC_RECORDING
   SwitchOff HRP_RECORDING
+}
+
+// --- GLOBAL SWITCH 10 (TAP / MENU / PANIC) ---
+TRIGGER_CLICK 10 = { SendTrigger TAP_TEMPO }
+TRIGGER_HOLD 10 = 
+{
+  // If not in menu, go to menu. If in menu, Panic Stop!
+  if ($CurrentBank != MENU) { GotoBank MENU }
+  else { SendTrigger GLOBAL_STOP }
 }
 
 // --- MICROCOSM SMART SWITCH ---
