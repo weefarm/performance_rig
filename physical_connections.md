@@ -53,11 +53,13 @@
 
 | #   | Cable Type     | From                          | To                       | Length Estimate  |
 | --- | -------------- | ----------------------------- | ------------------------ | ---------------- |
-| 1   | MIDI 5-pin     | Stock FCB1010 MIDI OUT        | FCB1010 WINO2 MIDI IN    | 1m (daisy chain) |
-| 2   | MIDI 5-pin     | FCB1010 WINO2 MIDI OUT        | mioXM DIN IN 1           | 3-5m             |
-| 3   | MIDI 5-pin     | Ground Control Pro MIDI OUT   | mioXM DIN IN 2           | 3-5m             |
-| 4   | MIDI 5-pin     | mioXM DIN OUT 1               | QuadCortex MIDI IN       | 2-3m             |
-| 5   | MIDI 5-pin     | mioXM DIN OUT 2               | HeadRush Prime MIDI IN   | 2-3m             |
+| 1   | MIDI 5-pin     | GCP MIDI OUT                  | Stock FCB MIDI IN        | 1m (floor chain) |
+| 2   | MIDI 5-pin     | Stock FCB MIDI OUT            | WINO2 MIDI IN            | 1m (floor chain) |
+| 3   | MIDI 5-pin     | WINO2 MIDI OUT                | Board PASSTHROUGH [IN]   | 3-5m (Main Link) |
+| 4   | MIDI 5-pin     | Board PASSTHROUGH [IN]        | mioXM DIN IN 1           | 0.5m (internal)  |
+| 5   | MIDI 5-pin     | mioXM DIN OUT 2               | Board PASSTHROUGH [OUT]  | 0.5m (internal)  |
+| 6   | MIDI 5-pin     | Board PASSTHROUGH [OUT]       | HRP MIDI IN              | 3-5m (Main Link) |
+| 7   | MIDI 5-pin     | mioXM DIN OUT 1               | QuadCortex MIDI IN       | 0.5m (internal)  |
 | 6   | TRS 1/4"       | Standalone Pedal 1 (Wah)      | QC Expression 1          | 2-3m             |
 | 7   | TRS 1/4"       | Standalone Pedal 2 (Volume)   | QC Expression 2          | 2-3m             |
 | 8   | TRS 1/4"       | HRP FX Loop Send (Stereo TRS) | Microcosm Input (TRS)    | 0.5m patch       |
