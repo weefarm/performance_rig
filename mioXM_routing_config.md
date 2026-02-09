@@ -16,25 +16,21 @@ Microcosm).
 
 ## Routing Matrix
 
-### DIN IN 1 (FCB1010 WINO2 / Stock)
+### DIN IN 1 (Controller Trunk: WINO2 / Stock / GCP)
 
 | Input Channel | Destination | Output Channel | Purpose           |
 | ------------- | ----------- | -------------- | ----------------- |
 | Ch 1          | DIN OUT 1   | Ch 1           | QC Control        |
 | Ch 2          | DIN OUT 2   | Ch 2           | HRP Control       |
 | Ch 3          | DIN OUT 2   | Ch 3           | Microcosm Control |
+| Ch 4          | DIN OUT 1   | Ch 1           | QC Scenes/Stomps  |
+| Ch 4          | DIN OUT 2   | Ch 3           | Microcosm Bypass  |
 
-### DIN IN 2 (Ground Control Pro)
+### DIN IN 1 REMAP RULES (Zero-Config Trunk)
 
-| Input Channel | Destination | Output Channel | Purpose          |
-| ------------- | ----------- | -------------- | ---------------- |
-| Ch 4          | DIN OUT 1   | Ch 1           | QC Scenes/Stomps |
-| Ch 4          | DIN OUT 2   | Ch 3           | Microcosm Bypass |
+#### GCP "Zero-Config" Remapping
 
-### DIN IN 2 (GCP "Zero-Config" Channel 1)
-
-These rules apply to a Ground Control Pro after a **Factory Reset** and setting
-to **4 Presets/Bank** mode.
+These rules apply to the GCP (Channel 1) merged into the main trunk.
 
 | Source (GCP Ch 1) | Transformation Type   | Target (Device) | Purpose                    |
 | :---------------- | :-------------------- | :-------------- | :------------------------- |
@@ -42,12 +38,9 @@ to **4 Presets/Bank** mode.
 | **CC 80-87**      | Remap to **CC 35-42** | QC (Ch 1)       | Stomps A-H                 |
 | **CC 87 (IA #8)** | Remap to **CC 88**    | WINO2 (Ch 4)    | Master Panic / Global Stop |
 
-### REMINDERS:
+#### Stock FCB1010 Remapping
 
-- Ensure GCP is set to **4 Presets/Bank**.
-- Verify GCP "Device 1" is on **Channel 1**.
-
-### DIN IN 1 (Stock FCB Channel 5)
+These rules apply to the Stock FCB (Channel 5) merged into the main trunk.
 
 These rules apply to a Stock FCB1010 after a **Factory Reset** with the Global
 MIDI Channel set to **5**.
