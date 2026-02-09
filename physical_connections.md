@@ -31,16 +31,25 @@
 │   │    MIDI      │    │                mioXM Hub                   │          │
 │   │ PASSTHROUGH  │    │                                            │          │
 │   │    [OUT]     │◀───┤[OUT 2]  [OUT 3]  [OUT 1]      [DIN IN 1]     │          │
-│   └──────┬───────┘    └────┬───────┬───────┬──────────────▲────────┘          │
-│          │                 │       │       │              │                   │
-│          └─────────────────┘       ▼       ▼              │                   │
-│                              ┌─────────┐┌─────────┐  ┌─────┴────┐             │
-│                              │Microcosm││QuadCortex││ (Internal)│             │
-│                              │  Ch 3   ││  Ch 1   ││  Trunk   │             │
-│                              │[MIDI IN]││[MIDI IN]│└──────────┘             │
-│                              └─────────┘└─────────┘                         │
-│                               │  │                                            │
-│                          ┌────┴──┴─────┐                                      │
+│   └──────┬───────┘    └─┬───▲───┬───▲───┬───▲───────────▲──────────┘          │
+│          │              │   │   │   │   │   └───────────┼──────────┐          │
+│          └──────────────┘   │   │   │   ▼               │          │          │
+│                             │   │   │ ┌─────────┐       │          │          │
+│                             │   │   │ │ (Future)│       │          │          │
+│                             │   │   │ └─────────┘     ┌─┴────────┐ │          │
+│                             │   │   ▼                 │ (Internal│ │          │
+│                             ▼   │ ┌─────────┐         │   Trunk) │ │          │
+│                      ┌─────────┐│ │QuadCortex│        └──────────┘ │          │
+│                      │Microcosm││ │  Ch 1   │                      │          │
+│                      │  Ch 3   ││ │[MIDI IN]│◀─────────────────────┘          │
+│                      │[MIDI IN]││ └────┬────┘                                 │
+│                      └────┬────┘└─[OUT]┘                                      │
+│                       [OUT]└───────┐│                                         │
+│                            └─────┐ ││                                         │
+│                                  ▼ ▼▼                                         │
+│                                [DIN IN 2/3]                                   │
+│                                                                               │
+│                          ┌─────────────┐                                      │
 │                          │ Standalone  │                                      │
 │                          │ EXP 1 & 2   │                                      │
 │                          └─────────────┘                                      │
@@ -64,19 +73,21 @@
 | 11  | TRS 1/4"       | HRP FX Loop Send (Stereo TRS) | Microcosm Input (TRS)    | 0.5m patch        |
 | 12  | Dual TS to TRS | Microcosm Output (L/R TS)     | HRP FX Loop Return (TRS) | 0.5m Y-adapter    |
 | 13  | MIDI 5-pin     | mioXM DIN OUT 3               | Microcosm MIDI IN        | 0.5m (internal)   |
+| 14  | MIDI 5-pin     | QuadCortex MIDI OUT           | mioXM DIN IN 2           | 0.5m (internal)   |
+| 15  | MIDI 5-pin     | Microcosm MIDI OUT            | mioXM DIN IN 3           | 0.5m (internal)   |
 
 ## mioXM Port Assignments
 
-| Port      | Device                            | Direction | MIDI Channels |
-| --------- | --------------------------------- | --------- | ------------- |
-| DIN IN 1  | FCB1010 WINO2 (+ Stock via daisy) | Input     | Ch 1, 2, 3, 5 |
-| DIN IN 2  | Ground Control Pro                | Input     | Ch 4          |
-| DIN IN 3  | _(Available)_                     | —         | —             |
-| DIN IN 4  | _(Available)_                     | —         | —             |
-| DIN OUT 1 | QuadCortex                        | Output    | Ch 1 only     |
-| DIN OUT 2 | HeadRush Prime                    | Output    | Ch 2          |
-| DIN OUT 3 | Microcosm                         | Output    | Ch 3          |
-| DIN OUT 4 | _(Available)_                     | —         | —             |
+| Port      | Device                           | Direction | MIDI Channels |
+| --------- | -------------------------------- | --------- | ------------- |
+| DIN IN 1  | Floor Ring Return (from HRP OUT) | Input     | Ch 1, 2, 3, 5 |
+| DIN IN 2  | QuadCortex                       | Input     | Ch 1          |
+| DIN IN 3  | Microcosm                        | Input     | Ch 3          |
+| DIN IN 4  | _(Available)_                    | —         | —             |
+| DIN OUT 1 | QuadCortex                       | Output    | Ch 1 only     |
+| DIN OUT 2 | HeadRush Prime                   | Output    | Ch 2          |
+| DIN OUT 3 | Microcosm                        | Output    | Ch 3          |
+| DIN OUT 4 | _(Available)_                    | —         | —             |
 
 ## Expression Pedal Connections
 

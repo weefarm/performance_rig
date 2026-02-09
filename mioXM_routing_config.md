@@ -16,7 +16,7 @@ Microcosm).
 
 ## Routing Matrix
 
-### DIN IN 1 (Controller Trunk: WINO2 / Stock / GCP)
+### DIN IN 1 (Controller Trunk / Ring Return)
 
 | Input Channel | Destination | Output Channel | Purpose           |
 | ------------- | ----------- | -------------- | ----------------- |
@@ -25,6 +25,19 @@ Microcosm).
 | Ch 3          | DIN OUT 3   | Ch 3           | Microcosm Control |
 | Ch 4          | DIN OUT 1   | Ch 1           | QC Scenes/Stomps  |
 | Ch 4          | DIN OUT 3   | Ch 3           | Microcosm Bypass  |
+
+### DIN IN 2 (QuadCortex Producer)
+
+| Input Channel | Destination | Output Channel | Purpose           |
+| ------------- | ----------- | -------------- | ----------------- |
+| (Real-Time)   | DIN OUT 2/3 | (Real-Time)    | Looper/Clock Sync |
+| Ch 1          | DIN OUT 2   | Ch 2           | QC -> HRP Control |
+
+### DIN IN 3 (Microcosm Producer)
+
+| Input Channel | Destination | Output Channel | Purpose           |
+| ------------- | ----------- | -------------- | ----------------- |
+| (Real-Time)   | DIN OUT 1/2 | (Real-Time)    | Looper/Clock Sync |
 
 ### DIN IN 1 REMAP RULES (Zero-Config Trunk)
 
