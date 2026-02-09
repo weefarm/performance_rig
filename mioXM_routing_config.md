@@ -39,6 +39,12 @@ Microcosm).
 | CC 35-42     | QC (Ch 1)       | Pass-through to CC 35-42 (Stomps) |
 | CC 102       | Micro (Ch 3)    | Pass-through to CC 102 (Bypass)   |
 
+### DIN IN 1 (Stock FCB Channel 5)
+
+| Source (Stock) | Target (Device) | Transformation              |
+| -------------- | --------------- | --------------------------- |
+| Any CC/PC      | HRP (Ch 2)      | Remap to Ch 2 (Global Pass) |
+
 ## Filter Configuration
 
 - **DIN OUT 1 (QC)**: Allow only Ch 1.
