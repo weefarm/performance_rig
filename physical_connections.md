@@ -48,30 +48,29 @@
 │                        │      │ [MIDI IN]│ │[MIDI IN] │                   │
 │                        │      │          │ │          │                   │
 │                        │      │ [EXP 1,2]│ │[FX LOOP] │                   │
-│                        │      └──────────┘ └────┬─────┘                   │
-│                        │           ▲            │                         │
-│                        │           │            ▼                         │
-│                        │      ┌────┴────┐ ┌──────────┐                    │
-│                        │      │ GCP EXP │ │Microcosm │                    │
-│                        │      │ 1 & 2   │ │  Ch 3    │                    │
-│                        │      │(Wah/Vol)│ │(in HRP   │                    │
-│                        └──────┴─────────┘ │ FX Loop) │                    │
+│                        │      └────▲──▲──┘ └────┬─────┘                   │
+│                        │           │  │         │                         │
+│                        │     ┌─────┴──┴──┐ ┌────┴─────┐                   │
+│                        │     │ Standalone│ │Microcosm │                   │
+│                        │     │ EXP 1 & 2 │ │  Ch 3    │                   │
+│                        │     │ (Wah/Vol) │ │(in HRP   │                   │
+│                        └─────┴───────────┘ │ FX Loop) │                   │
 │                                           └──────────┘                    │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Cable List
 
-| #   | Cable Type    | From                        | To                       | Length Estimate  |
-| --- | ------------- | --------------------------- | ------------------------ | ---------------- |
-| 1   | MIDI 5-pin    | Stock FCB1010 MIDI OUT      | FCB1010 WINO2 MIDI IN    | 1m (daisy chain) |
-| 2   | MIDI 5-pin    | FCB1010 WINO2 MIDI OUT      | mioXM DIN IN 1           | 3-5m             |
-| 3   | MIDI 5-pin    | Ground Control Pro MIDI OUT | mioXM DIN IN 2           | 3-5m             |
-| 4   | MIDI 5-pin    | mioXM DIN OUT 1             | QuadCortex MIDI IN       | 2-3m             |
-| 5   | MIDI 5-pin    | mioXM DIN OUT 2             | HeadRush Prime MIDI IN   | 2-3m             |
-| 6   | TRS 1/4"      | GCP Pedal 1 (Expression)    | QC Expression 1 (Wah)    | 2-3m             |
-| 7   | TRS 1/4"      | GCP Pedal 2 (Expression)    | QC Expression 2 (Volume) | 2-3m             |
-| 8   | TRS 1/4" (x2) | HRP FX Loop Send/Return     | Microcosm In/Out         | 0.5m patch       |
+| #   | Cable Type    | From                        | To                     | Length Estimate  |
+| --- | ------------- | --------------------------- | ---------------------- | ---------------- |
+| 1   | MIDI 5-pin    | Stock FCB1010 MIDI OUT      | FCB1010 WINO2 MIDI IN  | 1m (daisy chain) |
+| 2   | MIDI 5-pin    | FCB1010 WINO2 MIDI OUT      | mioXM DIN IN 1         | 3-5m             |
+| 3   | MIDI 5-pin    | Ground Control Pro MIDI OUT | mioXM DIN IN 2         | 3-5m             |
+| 4   | MIDI 5-pin    | mioXM DIN OUT 1             | QuadCortex MIDI IN     | 2-3m             |
+| 5   | MIDI 5-pin    | mioXM DIN OUT 2             | HeadRush Prime MIDI IN | 2-3m             |
+| 6   | TRS 1/4"      | Standalone Pedal 1 (Wah)    | QC Expression 1        | 2-3m             |
+| 7   | TRS 1/4"      | Standalone Pedal 2 (Volume) | QC Expression 2        | 2-3m             |
+| 8   | TRS 1/4" (x2) | HRP FX Loop Send/Return     | Microcosm In/Out       | 0.5m patch       |
 
 ## mioXM Port Assignments
 
@@ -90,8 +89,10 @@
 
 | Pedal         | Physical Location         | Cable To        | Target CC           |
 | ------------- | ------------------------- | --------------- | ------------------- |
-| GCP EXP 1     | Ground Control Pro jack 1 | QC EXP 1 input  | CC 1 (Wah)          |
-| GCP EXP 2     | Ground Control Pro jack 2 | QC EXP 2 input  | CC 2 (Volume)       |
+| Standalone 1  | Floor (Direct to QC)      | QC EXP 1 input  | Internal (Wah)      |
+| Standalone 2  | Floor (Direct to QC)      | QC EXP 2 input  | Internal (Volume)   |
+| GCP EXP 1     | Ground Control Pro jack 1 | Via MIDI to QC  | User assignable     |
+| GCP EXP 2     | Ground Control Pro jack 2 | Via MIDI to QC  | User assignable     |
 | WINO2 EXP A   | FCB1010 WINO2 internal    | Via MIDI to HRP | CC 11 (Mix)         |
 | WINO2 EXP B   | FCB1010 WINO2 internal    | Via MIDI to HRP | CC 12 (FX Loop Mix) |
 | HRP Built-in  | On HeadRush Prime         | Internal        | User assignable     |
@@ -101,8 +102,10 @@
 
 - The Stock FCB1010 daisy-chains into the WINO2's MIDI IN, then consolidates to
   one cable to mioXM
-- GCP expression pedals connect directly to QC's analog inputs (not via MIDI)
-  for lowest latency
+- Standalone expression pedals connect directly to QC's analog inputs for lowest
+  latency and dedicated Wah/Volume control.
+- GCP expression pedals connect to the GCP hardware and send MIDI CC data via
+  the MIDI chain.
 - Microcosm receives MIDI from HRP MIDI THRU chain; mioXM routes Ch 3 to DIN OUT
   2
 - All MIDI cables should be quality 5-pin DIN; avoid cheap cables for
