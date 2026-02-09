@@ -31,13 +31,21 @@ Microcosm).
 | Ch 4          | DIN OUT 1   | Ch 1           | QC Scenes/Stomps |
 | Ch 4          | DIN OUT 2   | Ch 3           | Microcosm Bypass |
 
-## Remap Rules (GCP Ch 4 -> Targets)
+### DIN IN 2 (GCP "Zero-Config" Channel 1)
 
-| Source (GCP) | Target (Device) | Transformation                    |
-| ------------ | --------------- | --------------------------------- |
-| CC 80-87     | QC (Ch 1)       | Remap to CC 43 (Scene Selection)  |
-| CC 35-42     | QC (Ch 1)       | Pass-through to CC 35-42 (Stomps) |
-| CC 102       | Micro (Ch 3)    | Pass-through to CC 102 (Bypass)   |
+These rules apply to a Ground Control Pro after a **Factory Reset** and setting
+to **4 Presets/Bank** mode.
+
+| Source (GCP Ch 1) | Transformation Type   | Target (Device) | Purpose                    |
+| :---------------- | :-------------------- | :-------------- | :------------------------- |
+| **PC 00-03**      | Remap to **CC 43**    | QC (Ch 1)       | Scenes A-D                 |
+| **CC 80-87**      | Remap to **CC 35-42** | QC (Ch 1)       | Stomps A-H                 |
+| **CC 87 (IA #8)** | Remap to **CC 88**    | WINO2 (Ch 4)    | Master Panic / Global Stop |
+
+### REMINDERS:
+
+- Ensure GCP is set to **4 Presets/Bank**.
+- Verify GCP "Device 1" is on **Channel 1**.
 
 ### DIN IN 1 (Stock FCB Channel 5)
 
