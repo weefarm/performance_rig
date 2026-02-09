@@ -66,17 +66,34 @@ MIDI Channel set to **5**.
 | CC 07 (Exp A)       | Remap to CC         | CC 61             | HRP Top Parameter Knob |
 | CC 27 (Exp B)       | Remap to CC         | CC 62             | HRP Mid Parameter Knob |
 
-## Global Synchronization (MIDI Real-Time)
+## MIDI Clock & Synchronization
 
-To support HeadRush Prime's **Threshold Start** and WINO2's **Global Tap
-Tempo**, the following messages are broadcast to all ports from **DIN IN 1**:
+To prevent clock jitter or multiple-master conflicts, the rig follows a **Single
+Master** topology.
 
-- **MIDI Clock**: Syncs delays/modulations.
-- **MIDI Start/Stop**: Triggers looper synchronization across HRP, QC, and
-  Microcosm.
+### The Strategy: HeadRush Prime as Master
 
-> [!IMPORTANT] Ensure **MIDI Real-Time** filtering is **DISABLED** on all ports
-> in Auracle for X-Series.
+The HeadRush Prime (HRP) is designated as the Clock Master because its
+**Threshold Start** feature requires it to dictate the shared looper state to
+the rest of the rig.
+
+| Device             | Role         | Implementation                                  | Settings                                   |
+| :----------------- | :----------- | :---------------------------------------------- | :----------------------------------------- |
+| **HeadRush Prime** | **Master**   | Sends Clock/Start/Stop to mioXM via Floor Ring. | `MIDI Clock Send: ON`, `MIDI Thru: ON`     |
+| **Quad Cortex**    | **Follower** | Receives Clock from mioXM [OUT 1].              | `MIDI Clock Receive: ON`, `Clock Out: OFF` |
+| **Microcosm**      | **Follower** | Receives Clock from mioXM [OUT 3].              | `MIDI Sync: External`                      |
+| **mioXM Hub**      | **Arbiter**  | Filters out other clocks; broadcasts HRP Clock. | Routing: `DIN IN 1 -> OUT 1, OUT 3`        |
+
+### Global Tap Tempo (WINO2 FS 10)
+
+- **Flow**: WINO2 (FS 10) sends **CC 93** (Tap) to the entire rig on broadcast.
+- **Sync**: Both HRP and QC receive the physical tap. The HRP (Master) then
+  stabilizes the MIDI Clock to that tempo and broadcasts the 24ppqn real-time
+  clock to the rest of the rig.
+
+> [!IMPORTANT] To avoid feedback loops, the `mioXM` must be configured to
+> **Filter MIDI Clock** on `DIN IN 2` (QC) and `DIN IN 3` (MC) if those devices
+> are accidentally set to send clock.
 
 ## Filter Configuration
 
