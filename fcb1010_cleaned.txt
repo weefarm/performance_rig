@@ -127,6 +127,12 @@ VAR $CC_HRP_TAP    = 64
 VAR $CC_MICRO_BYP  = 102
 VAR $CC_MICRO_TAP  = 93    // Standard Hologram Tap CC
 
+VAR $S10_ACTIVE    = false // Tracking for Switch 10 Hold
+VAR $S10_HELD      = false
+
+VAR $MICRO_ACTIVE_S = false // Tracking for Microcosm Hold
+VAR $MICRO_HELD     = false
+
 // ******************************************************************
 // INITIALIZATION
 // ******************************************************************
@@ -159,20 +165,53 @@ TRIGGER_CLICK GLOBAL_STOP =
 }
 
 // --- GLOBAL SWITCH 10 (TAP / MENU / PANIC) ---
-TRIGGER_CLICK 10 = { SendTrigger TAP_TEMPO }
-TRIGGER_HOLD 10 = 
+// Validating Tap vs Hold using WaitWithoutBlocking (UnO2 Manual 4.6)
+TRIGGER_CLICK 10 = 
+{ 
+  $S10_ACTIVE = true
+  $S10_HELD = false
+  WaitWithoutBlocking 5 // 500ms
+  if ($S10_ACTIVE)
+  {
+    $S10_HELD = true
+    if (#CURRENT_BANK == MENU) { SendTrigger GLOBAL_STOP }
+    else { GotoBank MENU }
+  }
+}
+
+TRIGGER_RELEASE 10 = 
 {
-  // If not in menu, go to menu. If in menu, Panic Stop!
-  if ($CurrentBank != MENU) { GotoBank MENU }
-  else { SendTrigger GLOBAL_STOP }
+  if (!$S10_HELD) { SendTrigger TAP_TEMPO }
+  $S10_ACTIVE = false
 }
 
 // --- MICROCOSM SMART SWITCH ---
-// Latching if tapped, Momentary if held
+// Tap: Toggle / Hold: Momentary Engage
 TRIGGER_CLICK TOGGLE_MICRO = 
 {
-  if (EFFECT_ON MICRO_ACTIVE) { SwitchOff MICRO_ACTIVE }
-  else { SwitchOn MICRO_ACTIVE }
+  $MICRO_ACTIVE_S = true
+  $MICRO_HELD = false
+  WaitWithoutBlocking 4 // 400ms
+  if ($MICRO_ACTIVE_S)
+  {
+    $MICRO_HELD = true
+    SwitchOn MICRO_ACTIVE // Momentary ON
+  }
+}
+
+TRIGGER_RELEASE TOGGLE_MICRO = 
+{
+  if ($MICRO_HELD)
+  {
+    SwitchOff MICRO_ACTIVE // Momentary OFF
+  }
+  else
+  {
+    // Tap: Toggle Logic
+    if (EFFECT_ON MICRO_ACTIVE) { SwitchOff MICRO_ACTIVE }
+    else { SwitchOn MICRO_ACTIVE }
+  }
+  $MICRO_ACTIVE_S = false
 }
 
 // --- QC ACTIONS ---
