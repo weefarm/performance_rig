@@ -1,8 +1,9 @@
+/** @format */
+
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {}
+    "folders": [
+        {
+            "path": ".",
+        },
+    ],
 }
