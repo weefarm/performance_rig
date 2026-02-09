@@ -96,10 +96,10 @@ BANKS =
          MOM_ACTIVE | QC_GIG_VIEW | QC_LOOPER_UI | MICRO_ACTIVE | PANIC_STOP
   
   // UNIFIED PERFORMANCE BANK (The "Tapdance Reduction" Bank)
-  // FCB 1-5  : QuadCortex Control (Row 1)
-  // FCB 6-10 : HeadRush Prime Control (Row 2)
-  LOOPER : QC_RECORDING | QC_PLAYING | QC_REVERSE | QC_HALF_SPEED | GOTO_MENU |
-           HRP_RECORDING | HRP_PLAYING | HRP_REVERSE | HRP_HALF_SPEED | TOGGLE_MICRO
+  // FCB 1-5  : HeadRush Prime Control (Bottom Row - Closest to User)
+  // FCB 6-10 : QuadCortex Control (Top Row - Further away)
+  LOOPER : HRP_RECORDING | HRP_PLAYING | HRP_REVERSE | HRP_HALF_SPEED | TOGGLE_MICRO |
+           QC_RECORDING | QC_PLAYING | QC_REVERSE | QC_HALF_SPEED | GOTO_MENU
 }
 
 // ******************************************************************
