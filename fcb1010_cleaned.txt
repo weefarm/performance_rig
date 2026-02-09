@@ -166,12 +166,12 @@ TRIGGER_CLICK GLOBAL_STOP =
 
 // --- GLOBAL SWITCH 10 (TAP / MENU / PANIC) ---
 // Validating Tap vs Hold using WaitWithoutBlocking (UnO2 Manual 4.6)
-// Increased to 10 (1s) to allow for slower tap tempos
+// Increased to 15 (1.5s) to allow for slower tap tempos (down to 40 BPM)
 TRIGGER_CLICK 10 = 
 { 
   $S10_ACTIVE = true
   $S10_HELD = false
-  WaitWithoutBlocking 10 // 1s
+  WaitWithoutBlocking 15 // 1.5s
   if ($S10_ACTIVE)
   {
     $S10_HELD = true
