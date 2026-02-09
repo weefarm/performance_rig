@@ -103,12 +103,11 @@
 
 ## Notes
 
-- The Stock FCB1010 daisy-chains into the WINO2's MIDI IN, then consolidates to
-  one cable to mioXM
+- **Floor Chain**: The Ground Control Pro (GCP), Stock FCB1010, WINO2, and
+  HeadRush Prime are all part of a single serial MIDI Ring. Data flows through
+  them in order before returning to the mioXM HUB via the "MIDI PASS IN" port.
 - Standalone expression pedals connect directly to QC's analog inputs for lowest
   latency and dedicated Wah/Volume control.
-- GCP expression pedals connect to the GCP hardware and send MIDI CC data via
-  the MIDI chain.
 - Microcosm receives dedicated MIDI from **mioXM DIN OUT 3** (internal to board
   box).
 - The HRP FX Loop is configured as a **Stereo Loop**, using TRS jacks for both
