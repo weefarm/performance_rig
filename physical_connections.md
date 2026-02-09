@@ -61,17 +61,17 @@
 
 ## Cable List
 
-| #   | Cable Type    | From                        | To                       | Length Estimate  |
-| --- | ------------- | --------------------------- | ------------------------ | ---------------- |
-| 1   | MIDI 5-pin    | Stock FCB1010 MIDI OUT      | FCB1010 WINO2 MIDI IN    | 1m (daisy chain) |
-| 2   | MIDI 5-pin    | FCB1010 WINO2 MIDI OUT      | mioXM DIN IN 1           | 3-5m             |
-| 3   | MIDI 5-pin    | Ground Control Pro MIDI OUT | mioXM DIN IN 2           | 3-5m             |
-| 4   | MIDI 5-pin    | mioXM DIN OUT 1             | QuadCortex MIDI IN       | 2-3m             |
-| 5   | MIDI 5-pin    | mioXM DIN OUT 2             | HeadRush Prime MIDI IN   | 2-3m             |
-| 6   | TRS 1/4"      | Standalone Pedal 1 (Wah)    | QC Expression 1          | 2-3m             |
-| 7   | TRS 1/4"      | Standalone Pedal 2 (Volume) | QC Expression 2          | 2-3m             |
-| 8   | TRS 1/4" (x2) | HRP FX Loop Send (L/R)      | Microcosm Input (L/R)    | 0.5m patch       |
-| 9   | TRS 1/4" (x2) | Microcosm Output (L/R)      | HRP FX Loop Return (L/R) | 0.5m patch       |
+| #   | Cable Type     | From                          | To                       | Length Estimate  |
+| --- | -------------- | ----------------------------- | ------------------------ | ---------------- |
+| 1   | MIDI 5-pin     | Stock FCB1010 MIDI OUT        | FCB1010 WINO2 MIDI IN    | 1m (daisy chain) |
+| 2   | MIDI 5-pin     | FCB1010 WINO2 MIDI OUT        | mioXM DIN IN 1           | 3-5m             |
+| 3   | MIDI 5-pin     | Ground Control Pro MIDI OUT   | mioXM DIN IN 2           | 3-5m             |
+| 4   | MIDI 5-pin     | mioXM DIN OUT 1               | QuadCortex MIDI IN       | 2-3m             |
+| 5   | MIDI 5-pin     | mioXM DIN OUT 2               | HeadRush Prime MIDI IN   | 2-3m             |
+| 6   | TRS 1/4"       | Standalone Pedal 1 (Wah)      | QC Expression 1          | 2-3m             |
+| 7   | TRS 1/4"       | Standalone Pedal 2 (Volume)   | QC Expression 2          | 2-3m             |
+| 8   | TRS 1/4"       | HRP FX Loop Send (Stereo TRS) | Microcosm Input (TRS)    | 0.5m patch       |
+| 9   | Dual TS to TRS | Microcosm Output (L/R TS)     | HRP FX Loop Return (TRS) | 0.5m Y-adapter   |
 
 ## mioXM Port Assignments
 
@@ -109,7 +109,8 @@
   the MIDI chain.
 - Microcosm receives MIDI from HRP MIDI THRU chain; mioXM routes Ch 3 to DIN OUT
   2
-- The HRP FX Loop is configured as a **Stereo Loop**, using separate TRS jacks
-  for Send L/R and Return L/R (4 cables total).
+- The HRP FX Loop is configured as a **Stereo Loop**, using TRS jacks for both
+  Send and Return. Due to the Microcosm's layout, this requires a standard TRS
+  cable for the Send and a Dual-Mono-TS to Stereo-TRS "Y" cable for the Return.
 - All MIDI cables should be quality 5-pin DIN; avoid cheap cables for
   reliability
