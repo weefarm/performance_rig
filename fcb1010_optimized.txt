@@ -1,0 +1,231 @@
+// =====================================================================
+// FCB1010 WINO2 - OPTIMIZED CONFIGURATION
+// Target: <2048 bytes compiled
+// Focus: Unified looper control with minimal bank structure
+// =====================================================================
+
+// ======================= MIDI CHANNELS =======================
+CHANNEL QC    = 1
+CHANNEL HRP   = 2
+CHANNEL MICRO = 3
+REMOTE_CONTROL_CHANNEL = 4
+
+// ======================= CC CONSTANTS =======================
+// QC Looper
+VAR $CC_QC_REC   = 53
+VAR $CC_QC_PLAY  = 54
+VAR $CC_QC_UNDO  = 56
+VAR $CC_QC_TAP   = 44
+
+// HRP Looper
+VAR $CC_HRP_REC    = 70
+VAR $CC_HRP_PLAY   = 69
+VAR $CC_HRP_MUTE   = 73
+VAR $CC_HRP_REV    = 74
+VAR $CC_HRP_INSERT = 71
+VAR $CC_HRP_PEEL   = 72
+VAR $CC_HRP_TAP    = 64
+
+// HRP Expression (mapped via SWEEP)
+VAR $CC_HRP_MIX    = 11
+VAR $CC_HRP_FXMIX  = 12
+
+// Microcosm
+VAR $CC_MICRO_BYPASS = 102
+VAR $CC_MICRO_STOP   = 31
+
+// ======================= STATE VARIABLES =======================
+VAR $HRP_RECORDING = false
+VAR $HRP_PLAYING   = false
+VAR $QC_RECORDING  = false
+VAR $QC_PLAYING    = false
+
+// ======================= EFFECTS =======================
+EFFECTS = {
+  HRP_REC
+  HRP_PLAY
+  HRP_MUTE
+  HRP_REV
+  QC_REC
+  QC_PLAY
+  TAP_TEMPO
+}
+
+// ======================= TRIGGERS =======================
+TRIGGERS = {
+  QC_TAP_GO
+  HRP_TAP_GO
+  QC_REC_ON
+  QC_REC_OFF
+  QC_PLAY_GO
+  QC_UNDO_GO
+  HRP_REC_GO
+  HRP_PLAY_GO
+  HRP_MUTE_GO
+  HRP_REV_GO
+  HRP_INSERT_GO
+  HRP_PEEL_GO
+  STOP_ALL
+  CLEAR_LEDS
+}
+
+// ======================= SWEEPS =======================
+SWEEPS = {
+  HRP_MIX
+  HRP_FXLOOP
+}
+
+// ======================= BANKS =======================
+USE_DIRECT_BANK
+
+BANKS = {
+  LOOPER : HRP_REC | HRP_PLAY | HRP_MUTE | HRP_REV | TAP_TEMPO | QC_REC | QC_PLAY | QC_UNDO | HRP_INSERT | STOP_ALL
+}
+
+// ======================= INIT =======================
+INIT_FCB = {
+  GotoBank LOOPER
+  $HRP_RECORDING = false
+  $HRP_PLAYING = false
+  $QC_RECORDING = false
+  $QC_PLAYING = false
+  SwitchOff HRP_REC
+  SwitchOff HRP_PLAY
+  SwitchOff QC_REC
+  SwitchOff QC_PLAY
+}
+
+INIT_BANK LOOPER = {}
+
+// ======================= TRIGGER IMPLEMENTATIONS =======================
+
+// --- Tap Tempo ---
+TRIGGER_CLICK QC_TAP_GO  = SendMidi QC CtrlChange $CC_QC_TAP 127
+TRIGGER_CLICK HRP_TAP_GO = SendMidi HRP CtrlChange $CC_HRP_TAP 127
+
+// --- QC Looper ---
+TRIGGER_CLICK QC_REC_ON  = SendMidi QC CtrlChange $CC_QC_REC 127
+TRIGGER_CLICK QC_REC_OFF = SendMidi QC CtrlChange $CC_QC_REC 0
+TRIGGER_CLICK QC_PLAY_GO = SendMidi QC CtrlChange $CC_QC_PLAY 127
+TRIGGER_CLICK QC_UNDO_GO = SendMidi QC CtrlChange $CC_QC_UNDO 127
+
+// --- HRP Looper ---
+TRIGGER_CLICK HRP_REC_GO    = SendMidi HRP CtrlChange $CC_HRP_REC 127
+TRIGGER_CLICK HRP_PLAY_GO   = SendMidi HRP CtrlChange $CC_HRP_PLAY 127
+TRIGGER_CLICK HRP_MUTE_GO   = SendMidi HRP CtrlChange $CC_HRP_MUTE 127
+TRIGGER_CLICK HRP_REV_GO    = SendMidi HRP CtrlChange $CC_HRP_REV 127
+TRIGGER_CLICK HRP_INSERT_GO = SendMidi HRP CtrlChange $CC_HRP_INSERT 127
+TRIGGER_CLICK HRP_PEEL_GO   = SendMidi HRP CtrlChange $CC_HRP_PEEL 127
+
+// --- Global ---
+TRIGGER_CLICK CLEAR_LEDS = {
+  SwitchOff HRP_REC
+  SwitchOff HRP_PLAY
+  SwitchOff QC_REC
+  SwitchOff QC_PLAY
+}
+
+TRIGGER_CLICK STOP_ALL = {
+  SendTrigger QC_REC_OFF
+  SendTrigger QC_PLAY_GO
+  SendTrigger HRP_PLAY_GO
+  SendMidi MICRO CtrlChange $CC_MICRO_STOP 127
+  SendTrigger CLEAR_LEDS
+  $HRP_RECORDING = false
+  $HRP_PLAYING = false
+  $QC_RECORDING = false
+  $QC_PLAYING = false
+}
+
+// ======================= EFFECT IMPLEMENTATIONS =======================
+
+// --- HRP Record ---
+EFFECT_ON HRP_REC = {
+  if (EFFECT_ON HRP_PLAY) { SwitchOff HRP_PLAY }
+  SendTrigger HRP_REC_GO
+  $HRP_RECORDING = true
+}
+EFFECT_OFF HRP_REC = {
+  SendTrigger HRP_REC_GO
+  $HRP_RECORDING = false
+  SwitchOn HRP_PLAY
+}
+
+// --- HRP Play ---
+EFFECT_ON HRP_PLAY = {
+  if (EFFECT_ON HRP_REC) { SwitchOff HRP_REC }
+  SendTrigger HRP_PLAY_GO
+  $HRP_PLAYING = true
+}
+EFFECT_OFF HRP_PLAY = {
+  SendTrigger HRP_PLAY_GO
+  $HRP_PLAYING = false
+}
+
+// --- HRP Mute ---
+EFFECT_ON HRP_MUTE  = SendTrigger HRP_MUTE_GO
+EFFECT_OFF HRP_MUTE = SendTrigger HRP_MUTE_GO
+
+// --- HRP Reverse ---
+EFFECT_ON HRP_REV  = SendTrigger HRP_REV_GO
+EFFECT_OFF HRP_REV = SendTrigger HRP_REV_GO
+
+// --- HRP Insert (for switch 9, short press) ---
+PRESET HRP_INSERT = SendTrigger HRP_INSERT_GO
+
+// --- QC Record ---
+EFFECT_ON QC_REC = {
+  if (EFFECT_ON QC_PLAY) { SwitchOff QC_PLAY }
+  SendTrigger QC_REC_ON
+  $QC_RECORDING = true
+}
+EFFECT_OFF QC_REC = {
+  SendTrigger QC_REC_OFF
+  $QC_RECORDING = false
+  SwitchOn QC_PLAY
+}
+
+// --- QC Play ---
+EFFECT_ON QC_PLAY = {
+  if (EFFECT_ON QC_REC) { SwitchOff QC_REC }
+  SendTrigger QC_PLAY_GO
+  $QC_PLAYING = true
+}
+EFFECT_OFF QC_PLAY = {
+  SendTrigger QC_PLAY_GO
+  $QC_PLAYING = false
+}
+
+// --- QC Undo (momentary function) ---
+PRESET QC_UNDO = {
+  SendTrigger QC_UNDO_GO
+  SendTrigger HRP_PEEL_GO
+}
+
+// --- Tap Tempo (shared) ---
+EFFECT_ON TAP_TEMPO = {
+  SendTrigger QC_TAP_GO
+  SendTrigger HRP_TAP_GO
+}
+EFFECT_OFF TAP_TEMPO = {}
+
+// --- Stop All (switch 10) ---
+PRESET STOP_ALL = SendTrigger STOP_ALL
+
+// ======================= SWEEP IMPLEMENTATIONS =======================
+SWEEP HRP_MIX    = SendMidi HRP CtrlChange $CC_HRP_MIX
+SWEEP HRP_FXLOOP = SendMidi HRP CtrlChange $CC_HRP_FXMIX
+
+// ======================= EXPRESSION PEDAL ASSIGNMENTS =======================
+// EXP A → HRP Mix (dry/wet for time-based effects)
+// EXP B → HRP FX Loop Mix (Microcosm blend)
+
+// =====================================================================
+// SWITCH LAYOUT REFERENCE:
+// =====================================================================
+// Switch 1: HRP_REC     | Switch 6: QC_REC
+// Switch 2: HRP_PLAY    | Switch 7: QC_PLAY
+// Switch 3: HRP_MUTE    | Switch 8: QC_UNDO (+ HRP Peel)
+// Switch 4: HRP_REV     | Switch 9: HRP_INSERT
+// Switch 5: TAP_TEMPO   | Switch 10: STOP_ALL
+// =====================================================================

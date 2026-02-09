@@ -1,0 +1,109 @@
+<!-- @format -->
+
+# Physical Connections - MIDI Guitar Rig
+
+## Connection Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           PHYSICAL LAYOUT                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   FLOOR (Foot Controllers)                                                  │
+│   ═══════════════════════════════════════════════                           │
+│                                                                             │
+│   ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐     │
+│   │  Stock FCB1010   │    │  FCB1010 WINO2   │    │ Ground Ctrl Pro  │     │
+│   │    (backup)      │    │  (primary ctrl)  │    │  (scenes/stomps) │     │
+│   │                  │    │                  │    │                  │     │
+│   │ [MIDI OUT]───────┼──▶│[MIDI IN] [MIDI OUT]────┐    [MIDI OUT]   │     │
+│   └──────────────────┘    └──────────────────┘    │    └─────┬──────┘     │
+│         ▲ EXP A,B              ▲ EXP A,B          │          │            │
+│         │                      │                  │          │            │
+│         │    (future use)      │  (HRP mix,       │          │            │
+│         │                      │   FX loop mix)   │          │            │
+│                                                   │          │            │
+│   ═══════════════════════════════════════════════│══════════│════════════ │
+│                                                   │          │            │
+│   RACK / TABLE                                    ▼          ▼            │
+│   ────────────────────────────────────────────────────────────            │
+│                                                                           │
+│   ┌─────────────────────────────────────────────────────────┐             │
+│   │                    mioXM Hub                            │             │
+│   │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐    │             │
+│   │  │ DIN IN 1│  │ DIN IN 2│  │DIN OUT 1│  │DIN OUT 2│    │             │
+│   │  │ (WINO2) │  │  (GCP)  │  │  (QC)   │  │  (HRP)  │    │             │
+│   │  └────▲────┘  └────▲────┘  └────┬────┘  └────┬────┘    │             │
+│   └───────┼────────────┼────────────┼────────────┼─────────┘             │
+│           │            │            │            │                        │
+│   ════════│════════════│════════════│════════════│═══════════════════════ │
+│           │            │            │            │                        │
+│   STAGE / AMP AREA     │            │            │                        │
+│   ─────────────────────│────────────│────────────│────────────────────    │
+│                        │            ▼            ▼                        │
+│                        │      ┌──────────┐ ┌──────────┐                   │
+│                        │      │QuadCortex│ │HeadRush  │                   │
+│                        │      │  Ch 1    │ │  Prime   │                   │
+│                        │      │          │ │  Ch 2    │                   │
+│                        │      │ [MIDI IN]│ │[MIDI IN] │                   │
+│                        │      │          │ │          │                   │
+│                        │      │ [EXP 1,2]│ │[FX LOOP] │                   │
+│                        │      └──────────┘ └────┬─────┘                   │
+│                        │           ▲            │                         │
+│                        │           │            ▼                         │
+│                        │      ┌────┴────┐ ┌──────────┐                    │
+│                        │      │ GCP EXP │ │Microcosm │                    │
+│                        │      │ 1 & 2   │ │  Ch 3    │                    │
+│                        │      │(Wah/Vol)│ │(in HRP   │                    │
+│                        └──────┴─────────┘ │ FX Loop) │                    │
+│                                           └──────────┘                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Cable List
+
+| #   | Cable Type    | From                        | To                       | Length Estimate  |
+| --- | ------------- | --------------------------- | ------------------------ | ---------------- |
+| 1   | MIDI 5-pin    | Stock FCB1010 MIDI OUT      | FCB1010 WINO2 MIDI IN    | 1m (daisy chain) |
+| 2   | MIDI 5-pin    | FCB1010 WINO2 MIDI OUT      | mioXM DIN IN 1           | 3-5m             |
+| 3   | MIDI 5-pin    | Ground Control Pro MIDI OUT | mioXM DIN IN 2           | 3-5m             |
+| 4   | MIDI 5-pin    | mioXM DIN OUT 1             | QuadCortex MIDI IN       | 2-3m             |
+| 5   | MIDI 5-pin    | mioXM DIN OUT 2             | HeadRush Prime MIDI IN   | 2-3m             |
+| 6   | TRS 1/4"      | GCP Pedal 1 (Expression)    | QC Expression 1 (Wah)    | 2-3m             |
+| 7   | TRS 1/4"      | GCP Pedal 2 (Expression)    | QC Expression 2 (Volume) | 2-3m             |
+| 8   | TRS 1/4" (x2) | HRP FX Loop Send/Return     | Microcosm In/Out         | 0.5m patch       |
+
+## mioXM Port Assignments
+
+| Port      | Device                            | Direction | MIDI Channels |
+| --------- | --------------------------------- | --------- | ------------- |
+| DIN IN 1  | FCB1010 WINO2 (+ Stock via daisy) | Input     | Ch 1, 2, 3, 5 |
+| DIN IN 2  | Ground Control Pro                | Input     | Ch 4          |
+| DIN IN 3  | _(Available)_                     | —         | —             |
+| DIN IN 4  | _(Available)_                     | —         | —             |
+| DIN OUT 1 | QuadCortex                        | Output    | Ch 1 only     |
+| DIN OUT 2 | HeadRush Prime                    | Output    | Ch 2, Ch 3    |
+| DIN OUT 3 | _(Available)_                     | —         | —             |
+| DIN OUT 4 | _(Available)_                     | —         | —             |
+
+## Expression Pedal Connections
+
+| Pedal         | Physical Location         | Cable To        | Target CC           |
+| ------------- | ------------------------- | --------------- | ------------------- |
+| GCP EXP 1     | Ground Control Pro jack 1 | QC EXP 1 input  | CC 1 (Wah)          |
+| GCP EXP 2     | Ground Control Pro jack 2 | QC EXP 2 input  | CC 2 (Volume)       |
+| WINO2 EXP A   | FCB1010 WINO2 internal    | Via MIDI to HRP | CC 11 (Mix)         |
+| WINO2 EXP B   | FCB1010 WINO2 internal    | Via MIDI to HRP | CC 12 (FX Loop Mix) |
+| HRP Built-in  | On HeadRush Prime         | Internal        | User assignable     |
+| Stock EXP A/B | Stock FCB1010             | _(Future use)_  | —                   |
+
+## Notes
+
+- The Stock FCB1010 daisy-chains into the WINO2's MIDI IN, then consolidates to
+  one cable to mioXM
+- GCP expression pedals connect directly to QC's analog inputs (not via MIDI)
+  for lowest latency
+- Microcosm receives MIDI from HRP MIDI THRU chain; mioXM routes Ch 3 to DIN OUT
+  2
+- All MIDI cables should be quality 5-pin DIN; avoid cheap cables for
+  reliability
