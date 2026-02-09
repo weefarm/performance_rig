@@ -41,9 +41,16 @@ Microcosm).
 
 ### DIN IN 1 (Stock FCB Channel 5)
 
-| Source (Stock) | Target (Device) | Transformation              |
-| -------------- | --------------- | --------------------------- |
-| Any CC/PC      | HRP (Ch 2)      | Remap to Ch 2 (Global Pass) |
+These rules apply to a Stock FCB1010 after a **Factory Reset** with the Global
+MIDI Channel set to **5**.
+
+| Source (Stock Ch 5) | Transformation Type | Target (HRP Ch 2) | Purpose                |
+| :------------------ | :------------------ | :---------------- | :--------------------- |
+| PC 00-07            | Remap to CC         | CC 75-82          | HRP Block Toggle 1-8   |
+| PC 08               | Remap to CC         | CC 17             | Rig Down (Previous)    |
+| PC 09               | Remap to CC         | CC 16             | Rig Up (Next)          |
+| CC 07 (Exp A)       | Remap to CC         | CC 61             | HRP Top Parameter Knob |
+| CC 27 (Exp B)       | Remap to CC         | CC 62             | HRP Mid Parameter Knob |
 
 ## Filter Configuration
 
