@@ -53,7 +53,20 @@ MIDI Channel set to **5**.
 | CC 07 (Exp A)       | Remap to CC         | CC 61             | HRP Top Parameter Knob |
 | CC 27 (Exp B)       | Remap to CC         | CC 62             | HRP Mid Parameter Knob |
 
+## Global Synchronization (MIDI Real-Time)
+
+To support HeadRush Prime's **Threshold Start** and WINO2's **Global Tap
+Tempo**, the following messages are broadcast to all ports from **DIN IN 1**:
+
+- **MIDI Clock**: Syncs delays/modulations.
+- **MIDI Start/Stop**: Triggers looper synchronization across HRP, QC, and
+  Microcosm.
+
+> [!IMPORTANT] Ensure **MIDI Real-Time** filtering is **DISABLED** on all ports
+> in Auracle for X-Series.
+
 ## Filter Configuration
 
-- **DIN OUT 1 (QC)**: Allow only Ch 1.
-- **DIN OUT 2 (HRP/Micro)**: Allow Ch 2 and Ch 3.
+- **DIN OUT 1 (QC)**: Allow Ch 1 + MIDI Real-Time.
+- **DIN OUT 2 (HRP)**: Allow Ch 2 + MIDI Real-Time.
+- **DIN OUT 3 (Micro)**: Allow Ch 3 + MIDI Real-Time.
