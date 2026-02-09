@@ -60,11 +60,11 @@
 | 5   | MIDI 5-pin     | mioXM DIN OUT 2               | Board PASSTHROUGH [OUT]  | 0.5m (internal)  |
 | 6   | MIDI 5-pin     | Board PASSTHROUGH [OUT]       | HRP MIDI IN              | 3-5m (Main Link) |
 | 7   | MIDI 5-pin     | mioXM DIN OUT 1               | QuadCortex MIDI IN       | 0.5m (internal)  |
-| 6   | TRS 1/4"       | Standalone Pedal 1 (Wah)      | QC Expression 1          | 2-3m             |
-| 7   | TRS 1/4"       | Standalone Pedal 2 (Volume)   | QC Expression 2          | 2-3m             |
-| 8   | TRS 1/4"       | HRP FX Loop Send (Stereo TRS) | Microcosm Input (TRS)    | 0.5m patch       |
-| 9   | Dual TS to TRS | Microcosm Output (L/R TS)     | HRP FX Loop Return (TRS) | 0.5m Y-adapter   |
-| 10  | MIDI 5-pin     | mioXM DIN OUT 3               | Microcosm MIDI IN        | 0.5m (internal)  |
+| 8   | TRS 1/4"       | Standalone Pedal 1 (Wah)      | QC Expression 1          | 2-3m             |
+| 9   | TRS 1/4"       | Standalone Pedal 2 (Volume)   | QC Expression 2          | 2-3m             |
+| 10  | TRS 1/4"       | HRP FX Loop Send (Stereo TRS) | Microcosm Input (TRS)    | 0.5m patch       |
+| 11  | Dual TS to TRS | Microcosm Output (L/R TS)     | HRP FX Loop Return (TRS) | 0.5m Y-adapter   |
+| 12  | MIDI 5-pin     | mioXM DIN OUT 3               | Microcosm MIDI IN        | 0.5m (internal)  |
 
 ## mioXM Port Assignments
 
@@ -100,10 +100,12 @@
   latency and dedicated Wah/Volume control.
 - GCP expression pedals connect to the GCP hardware and send MIDI CC data via
   the MIDI chain.
-- Microcosm receives MIDI from HRP MIDI THRU chain; mioXM routes Ch 3 to DIN OUT
-  2
+- Microcosm receives dedicated MIDI from **mioXM DIN OUT 3** (internal to board
+  box).
 - The HRP FX Loop is configured as a **Stereo Loop**, using TRS jacks for both
   Send and Return. Due to the Microcosm's layout, this requires a standard TRS
   cable for the Send and a Dual-Mono-TS to Stereo-TRS "Y" cable for the Return.
+- The pedalboard box utilizes a single MIDI Passthrough Panel (1x IN, 1x OUT) to
+  interface between the on-board hub and off-board gear.
 - All MIDI cables should be quality 5-pin DIN; avoid cheap cables for
-  reliability
+  reliability.
