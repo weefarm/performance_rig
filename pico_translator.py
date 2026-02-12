@@ -83,7 +83,7 @@ class RigTranslator(MIDIInterface):
         
         # Pass through others
         else:
-            self.send_program_change(channel, number)
+            self.program_change(channel, number)
 
     def on_control_change(self, channel, controller, value):
         # 1. GCP Exp Pedals (Ch 4)
@@ -102,7 +102,19 @@ class RigTranslator(MIDIInterface):
         
         # Pass through
         else:
-            self.send_control_change(channel, controller, value)
+            self.control_change(channel, controller, value)
+            
+    def on_midi_event(self, cin, midi0, midi1, midi2):
+        # This catch-all ensures Clock, SysEx, and other real-time
+        # messages are passed through untouched.
+        # Check if it's NOT a PC or CC (which we already handled)
+        status = midi0 & 0xF0
+        if status != 0xC0 and status != 0xB0:
+            # Pass through the raw packet
+            self.write(cin, midi0, midi1, midi2)
+        else:
+            # Let the specific handlers (on_program_change, etc) take care of it
+            super().on_midi_event(cin, midi0, midi1, midi2)
 
 # --- STARTUP ---
 translator = RigTranslator()
