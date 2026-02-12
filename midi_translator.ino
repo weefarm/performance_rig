@@ -68,9 +68,26 @@ void handleControlChange(byte channel, byte controller, byte value) {
     }
 }
 
+// --- LED HELPER ---
+void setLED(byte r, byte g, byte b) {
+    // Arduino Nano ESP32 RGB LED is Common Anode (active LOW)
+    analogWrite(LED_RED, 255 - r);
+    analogWrite(LED_GREEN, 255 - g);
+    analogWrite(LED_BLUE, 255 - b);
+}
+
 void setup() {
     MIDI.begin();
+    
+    // Set initial LED to Blue (Rig Healthy)
+    pinMode(LED_RED, OUTPUT);
+    pinMode(LED_GREEN, OUTPUT);
+    pinMode(LED_BLUE, OUTPUT);
+    setLED(0, 0, 255); 
 }
+
+unsigned long lastFlash = 0;
+bool isFlashing = false;
 
 void loop() {
     // Check for incoming USB MIDI messages
@@ -79,6 +96,11 @@ void loop() {
         byte channel = MIDI.getChannel();
         byte data1   = MIDI.getData1();
         byte data2   = MIDI.getData2();
+
+        // Visual Feedback: Flash Green on MIDI receipt
+        setLED(0, 255, 0);
+        lastFlash = millis();
+        isFlashing = true;
 
         switch (type) {
             case 0xC0: // Program Change
@@ -99,5 +121,11 @@ void loop() {
                 MIDI.sendRaw(type, data1, data2);
                 break;
         }
+    }
+
+    // Reset LED to Blue after 50ms of activity
+    if (isFlashing && (millis() - lastFlash > 50)) {
+        setLED(0, 0, 255); 
+        isFlashing = false;
     }
 }
