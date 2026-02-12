@@ -151,7 +151,8 @@ Use the following terminology for labeling switches on each device:
 
 #### 1. Constructing an Ambient Backdrop
 
-1.  **Engage Microcosm**: Tap the **MC** switch (or GCP IA #5).
+1.  **Engage Microcosm**: Tap the **MC** switch on the device (or use the WINO2
+    `MICRO_CTRL` bank).
 2.  **Construct Loop**: Hold the **MC switch** (Smart Switch logic) to engage
     and play phrases into the Microcosm.
 3.  **Capture in QC**: While still holding the MC switch, press **QC REC**.
