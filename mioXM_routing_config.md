@@ -1,102 +1,117 @@
 <!-- @format -->
 
-# mioXM Routing Configuration
+# mioXM Configuration Guide (AuracleX)
 
-The iConnectivity mioXM acts as the central hub for the performance rig, routing
-MIDI between controllers (WINO2, Stock FCB, GCP) and targets (QC, HRP,
-Microcosm).
+This document provides the exact settings for the **Auracle for X-Series
+(AuracleX)** software.
 
-## Channel Mapping
+> [!IMPORTANT] **Logic Reminder**: In AuracleX, a **HIGHLIGHTED** (selected) box
+> or button means the signal is **BLOCKED/FILTERED**. A clear (unselected) box
+> means the signal is **ENABLED**.
 
-- **Channel 1**: QuadCortex (Main guitar effects + Ambient Looper)
-- **Channel 2**: HeadRush Prime (Vocal effects + Song Structure Looper)
-- **Channel 3**: Hologram Microcosm (Ambient textures)
-- **Channel 4**: Ground Control Pro (Scene/Stomp controller)
-- **Channel 5**: Internal system channel for Stock FCB -> WINO2 communication
+---
 
-## Routing Matrix
+## 0. Port Labeling
 
-### DIN IN 1 (Controller Trunk / Ring Return)
+Before configuring routing, rename your ports in AuracleX to match these labels.
 
-| Input Channel | Destination | Output Channel | Purpose           |
-| ------------- | ----------- | -------------- | ----------------- |
-| Ch 1          | DIN OUT 1   | Ch 1           | QC Control        |
-| Ch 2          | DIN OUT 2   | Ch 2           | HRP Control       |
-| Ch 3          | DIN OUT 3   | Ch 3           | Microcosm Control |
-| Ch 4          | DIN OUT 1   | Ch 1           | QC Scenes/Stomps  |
-| Ch 4          | DIN OUT 3   | Ch 3           | Microcosm Bypass  |
+| Physical Port  | Software Label | Connected Device             |
+| :------------- | :------------- | :--------------------------- |
+| **DIN 1**      | `Floor Ring`   | Floor Ring (GCP → FCB → HRP) |
+| **DIN 2**      | `Microcosm`    | Microcosm MIDI IN/OUT        |
+| **USB HOST 1** | `QC`           | QuadCortex (Bi-Dir)          |
 
-### DIN IN 2 (QuadCortex Producer)
+---
 
-| Input Channel | Destination | Output Channel | Purpose           |
-| ------------- | ----------- | -------------- | ----------------- |
-| (Real-Time)   | DIN OUT 2/3 | (Real-Time)    | Looper/Clock Sync |
-| Ch 1          | DIN OUT 2   | Ch 2           | QC -> HRP Control |
+## 1. MIDI Routing
 
-### DIN IN 3 (Microcosm Producer)
+The **Routing** page connects Inputs (left) to Outputs (top).
 
-| Input Channel | Destination | Output Channel | Purpose           |
-| ------------- | ----------- | -------------- | ----------------- |
-| (Real-Time)   | DIN OUT 1/2 | (Real-Time)    | Looper/Clock Sync |
+### Routing Matrix
 
-### DIN IN 1 REMAP RULES (Zero-Config Trunk)
+| Input Port (Source)    | Destination Ports (Enabled) | Purpose                       |
+| :--------------------- | :-------------------------- | :---------------------------- |
+| **DIN 1** (Floor Ring) | **USB HOST 1**, **DIN 2**   | Main floor chain distribution |
+| **USB HOST 1** (QC)    | **DIN 1**, **DIN 2**        | QC control of HRP and Sync    |
+| **DIN 2** (Microcosm)  | **USB HOST 1**, **DIN 1**   | Microcosm Sync to rig         |
 
-#### GCP "Zero-Config" Remapping
+---
 
-These rules apply to the GCP (Channel 1) merged into the main trunk.
+## 2. Filter & Remap
 
-| Source (GCP Ch 1) | Transformation Type   | Target (Device) | Purpose                    |
-| :---------------- | :-------------------- | :-------------- | :------------------------- |
-| **PC 00-03**      | Remap to **CC 43**    | QC (Ch 1)       | Scenes A-D                 |
-| **CC 80-87**      | Remap to **CC 35-42** | QC (Ch 1)       | Stomps A-H                 |
-| **CC 87 (IA #8)** | Remap to **CC 88**    | WINO2 (Ch 4)    | Master Panic / Global Stop |
+Grouped by physical port pair. Highlights in AuracleX mean **BLOCKED**.
 
-#### Stock FCB1010 Remapping
+### DIN 1: Floor Ring
 
-These rules apply to the Stock FCB (Channel 5) merged into the main trunk.
+#### Input Filters
 
-These rules apply to a Stock FCB1010 after a **Factory Reset** with the Global
-MIDI Channel set to **5**.
+- **System**: Highlight **Active Sensing** only; others unhighlighted.
+- **Channel (1-16)**: Highlight **6-16 (All Message Types)** to block.
+- **Rationale**: Allow all floor controllers (Ch 1-5); block everything else.
 
-| Source (Stock Ch 5) | Transformation Type | Target (HRP Ch 2) | Purpose                |
-| :------------------ | :------------------ | :---------------- | :--------------------- |
-| PC 00-07            | Remap to CC         | CC 75-82          | HRP Block Toggle 1-8   |
-| PC 08               | Remap to CC         | CC 17             | Rig Down (Previous)    |
-| PC 09               | Remap to CC         | CC 16             | Rig Up (Next)          |
-| CC 07 (Exp A)       | Remap to CC         | CC 61             | HRP Top Parameter Knob |
-| CC 27 (Exp B)       | Remap to CC         | CC 62             | HRP Mid Parameter Knob |
+#### Output Filters
 
-## MIDI Clock & Synchronization
+- **System**: Highlight **Active Sensing** only; others unhighlighted.
+- **Rationale**: Allow Floor Ring to receive master sync from rig.
 
-To prevent clock jitter or multiple-master conflicts, the rig follows a **Single
-Master** topology.
+### DIN 2: Microcosm
 
-### The Strategy: HeadRush Prime as Master
+#### Input Filters
 
-The HeadRush Prime (HRP) is designated as the Clock Master because its
-**Threshold Start** feature requires it to dictate the shared looper state to
-the rest of the rig.
+- **System**: Highlight **Timing Clock, Start, Stop, Continue, Song Position
+  Pointer, Time Code Quarter Frame, Active Sensing**; others unhighlighted.
+- **Channel (1-16)**: Highlight **1, 2, 4-16 (All Message Types)** to block.
+- **Rationale**: Block Microcosm internal clock/transport; only allow produce
+  messages on Ch 3.
 
-| Device             | Role         | Implementation                                  | Settings                                   |
-| :----------------- | :----------- | :---------------------------------------------- | :----------------------------------------- |
-| **HeadRush Prime** | **Master**   | Sends Clock/Start/Stop to mioXM via Floor Ring. | `MIDI Clock Send: ON`, `MIDI Thru: ON`     |
-| **Quad Cortex**    | **Follower** | Receives Clock from mioXM [OUT 1].              | `MIDI Clock Receive: ON`, `Clock Out: OFF` |
-| **Microcosm**      | **Follower** | Receives Clock from mioXM [OUT 3].              | `MIDI Sync: External`                      |
-| **mioXM Hub**      | **Arbiter**  | Filters out other clocks; broadcasts HRP Clock. | Routing: `DIN IN 1 -> OUT 1, OUT 3`        |
+#### Output Filters
 
-### Global Tap Tempo (WINO2 FS 10)
+- **System**: Highlight **Active Sensing** only; others unhighlighted.
+- **Rationale**: Allow Microcosm to receive master sync/transport from rig.
 
-- **Flow**: WINO2 (FS 10) sends **CC 93** (Tap) to the entire rig on broadcast.
-- **Sync**: Both HRP and QC receive the physical tap. The HRP (Master) then
-  stabilizes the MIDI Clock to that tempo and broadcasts the 24ppqn real-time
-  clock to the rest of the rig.
+### USB HOST 1: QC
 
-> [!IMPORTANT] To avoid feedback loops, the `mioXM` must be configured to
-> **Filter MIDI Clock** on `DIN IN 2` (QC) and `DIN IN 3` (MC) if those devices
-> are accidentally set to send clock.
+#### Input Filters
 
-## Filter Configuration
+- **System**: Highlight **Timing Clock, Start, Stop, Continue, Song Position
+  Pointer, Time Code Quarter Frame, Active Sensing** only; others unhighlighted.
+- **Channel (1-16)**: Highlight **2-16 (All Message Types)** to block.
+- **Rationale**: Block QC internal clock/transport; only allow produce messages
+  on Ch 1.
 
-- **DIN OUT 1 (QC)**: Allow Ch 1 + MIDI Real-Time.
-- **DIN OUT 2 (HRP)**: Allow Ch 2 + MIDI Real-Time.
-- **DIN OUT 3 (Micro)**: Allow Ch 3 + MIDI Real-Time.
+#### Output Filters
+
+- **System**: Highlight **Active Sensing** only; others unhighlighted.
+- **Rationale**: Allow QC to receive master sync from rig.
+
+---
+
+## 3. USB Host Reservation
+
+Ensures the **QuadCortex** always stays on **HST 1**.
+
+1.  Connect QC to any USB Host port.
+2.  Open **USB Host Reservation** tab.
+3.  Find `QuadCortex` in the connected list.
+4.  Set Reservation to **HST 1**.
+5.  Click **Save**.
+
+---
+
+## 4. Presets
+
+- **Preset 1**: `Performance_Rig_Main` (Store to device)
+
+---
+
+## 5. RTP/Network MIDI
+
+- **Status**: **All Blocked** (To ensure strictly wired performance).
+- Ensure no routes exist between RTP ports and the performance ports.
+
+---
+
+## 6. Firmware
+
+- Ensure mioXM is on the latest firmware version displayed in the **Firmware**
+  tab.

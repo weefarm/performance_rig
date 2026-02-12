@@ -1,283 +1,263 @@
-// ******************************************************************
-// PERFORMANCE RIG - WINO2 CONFIGURATION (UNO2 Firmware)
-// Optimized for QuadCortex, HeadRush Prime, and Microcosm
-// ******************************************************************
+PRESETS =
+{
+GOTO_MENU
+GOTO_LOOPER
+GOTO_SCENES
+GOTO_STOMPS
+QC_SETTINGS
+LSYNC_SELECT
+QCLOOP_FREE
+SYNC_0
+SYNC_1
+SYNC_2
+SYNC_3
+SYNC_4
+SYNC_5
+SYNC_6
+SYNC_7
+SYNC_8
+SYNC_16
+STOP_ALL
+QC_SCENES
+QC_STOMPS
+MICRO_CTRL
+PANIC_STOP
+}
 
 EFFECTS =
 {
-  // --- QC LOOPER STATES ---
-  QC_RECORDING      // CC 53
-  QC_PLAYING        // CC 54
-  QC_DUBBING        // CC 53 (alt logic)
-  QC_REVERSE        // CC 55
-  QC_HALF_SPEED     // CC 51
-  QC_ONE_SHOT       // CC 50
-  
-  // --- HRP LOOPER STATES ---
-  HRP_RECORDING     // CC 70
-  HRP_PLAYING       // CC 69
-  HRP_REVERSE       // CC 74
-  HRP_HALF_SPEED    // CC 65
-  HRP_MUTE          // CC 73
-  
-  // --- MICROCOSM STATES ---
-  MICRO_ACTIVE      // CC 102 (Smart Switch)
-  
-  // --- RIG UTILITIES ---
-  MOM_ACTIVE        // Global Momentary Mode Toggle
-  QC_LOOPER_UI      // CC 48
-  QC_GIG_VIEW       // CC 46
-  QC_TUNER          // CC 45
+QC_RECORDING
+QC_PLAYING
+QC_DUBBING
+QC_REVERSE
+QC_HALF_SPEED
+QC_ONE_SHOT
+HRP_RECORDING
+HRP_PLAYING
+HRP_REVERSE
+HRP_HALF_SPEED
+HRP_MUTE
+MICRO_ACTIVE
+MOM_ACTIVE
+QC_LOOPER_UI
+QC_GIG_VIEW
+QC_TUNER
+MICRO_BYPASS
+MICRO_HOLD
+MICRO_REV
+MICRO_REC
+MICRO_PLAY
+MICRO_STOP
+MICRO_ERASE
+HALFSPEED_ACTIVE
+REVERSE_ACTIVE
+PLAYING
+DUPLICATING
+ONESHOT_ACTIVE
+PUNCHED_IN
+RECORDING
+DUBBING
 }
 
-// ******************************************************************
 TRIGGERS =
 {
-  // --- MASTER CONTROL ---
-  GLOBAL_STOP
-  TAP_TEMPO
-  PANIC_STOP        // Triggered via MIDI In from GCP
-
-  // --- QC TRIGGERS ---
-  QC_REC_ON, QC_REC_OFF
-  QC_PLAY_TOGGLE
-  QC_REV_TOGGLE
-  QC_HALF_TOGGLE
-  QC_ONE_TOGGLE
-  QC_UNDO_REDO      // CC 56
-  
-  // --- HRP TRIGGERS ---
-  HRP_REC_TOGGLE
-  HRP_PLAY_TOGGLE
-  HRP_REV_TOGGLE
-  HRP_HALF_TOGGLE
-  HRP_PEEL          // CC 72
-  HRP_UNPEEL        // CC 123
-  
-  // --- MICROCOSM TRIGGERS ---
-  MICRO_ENGAGE      // CC 102 (Value 127)
-  MICRO_BYPASS      // CC 102 (Value 0)
+GLOBAL_STOP
+TAP_TEMPO
+QC_REC_ON
+QC_REC_OFF
+QC_PLAY_TOGGLE
+QC_REV_TOGGLE
+QC_HALF_TOGGLE
+QC_ONE_TOGGLE
+QC_UNDO_REDO
+HRP_REC_TOGGLE
+HRP_PLAY_TOGGLE
+HRP_REV_TOGGLE
+HRP_HALF_TOGGLE
+HRP_PEEL
+HRP_UNPEEL
+MICRO_ENGAGE
+MICRO_REC_GO
+MICRO_PLAY_GO
+MICRO_STOP_GO
+MICRO_ERASE_GO
+S10_TRIGGER
+TOGGLE_HALFSPEED
+TOGGLE_REVERSE
+TOGGLE_PLAY
+TOGGLE_DUPLICATE
+TOGGLE_ONESHOT
+PUNCH_IN_MOM
+PUNCH_IN_ON
+PUNCH_IN_OFF
+TOGGLE_MICRO
 }
 
-// ******************************************************************
 SWEEPS =
 {
-  // WINO2 Expression Pedals
-  MICRO_MIX_PEDAL   // EXP A -> QC Param (Microcosm Loop Mix)
-  HRP_MIX_PEDAL     // EXP B -> QC Param (HRP Loop Mix)
+MICRO_MIX_PEDAL
+HRP_MIX_PEDAL
 }
-
-// ******************************************************************
-PRESETS =
-{
-  // --- NAVIGATION ---
-  GOTO_MENU
-  GOTO_LOOPER
-  GOTO_SCENES
-  GOTO_STOMPS
-  
-  // --- LOGIC WRAPPERS ---
-  TOGGLE_MICRO      // Handles latching/momentary logic
-  TAP_STORM         // Tap tempo for all units
-}
-
-// ******************************************************************
-// CHANNELS & BANKS
-// ******************************************************************
-CHANNEL QC    = 1
-CHANNEL HRP   = 2
-CHANNEL MICRO = 3
-CHANNEL GCP   = 4 // External Input via mioXM
 
 BANKS =
 {
-  // MAIN NAVIGATION BANK
-  MENU : GOTO_LOOPER | GOTO_SCENES | GOTO_STOMPS | QC_TUNER | TAP_TEMPO | 
-         MOM_ACTIVE | QC_GIG_VIEW | QC_LOOPER_UI | MICRO_ACTIVE | PANIC_STOP
-  
-  // UNIFIED PERFORMANCE BANK (The "Tapdance Reduction" Bank)
-  // FCB 1-5  : HeadRush Prime Control (Bottom Row - Closest to User)
-  // FCB 6-10 : QuadCortex Control (Top Row - Further away)
-  LOOPER : HRP_RECORDING | HRP_PLAYING | HRP_REVERSE | HRP_HALF_SPEED | TOGGLE_MICRO |
-           QC_RECORDING | QC_PLAYING | QC_REVERSE | QC_HALF_SPEED | GOTO_MENU
+   MENU   : GOTO_LOOPER   | GOTO_SCENES | GOTO_STOMPS | QC_TUNER       | TAP_TEMPO    | MOM_ACTIVE   | QC_GIG_VIEW | QC_LOOPER_UI | MICRO_ACTIVE  | PANIC_STOP 
+   LOOPER : HRP_RECORDING | HRP_PLAYING | HRP_REVERSE | HRP_HALF_SPEED | TOGGLE_MICRO | QC_RECORDING | QC_PLAYING  | QC_REVERSE   | QC_HALF_SPEED | S10_TRIGGER
 }
 
-// ******************************************************************
-// VARIABLES & CONSTANTS
-// ******************************************************************
-VAR $CC_QC_REC     = 53
-VAR $CC_QC_PLAY    = 54
-VAR $CC_QC_REV     = 55
-VAR $CC_QC_HALF    = 51
-VAR $CC_QC_ONE     = 50
-VAR $CC_QC_UNDO    = 56
-VAR $CC_QC_UI      = 48
-VAR $CC_QC_GIG     = 46
-VAR $CC_QC_TUNER   = 45
-VAR $CC_QC_TAP     = 44
+CHANNEL QC = 1
+CHANNEL HRP = 2
+CHANNEL MICRO = 3
+CHANNEL GCP = 4
+REMOTE_CONTROL_CHANNEL = 4
 
-VAR $CC_HRP_REC    = 70
-VAR $CC_HRP_PLAY   = 69
-VAR $CC_HRP_REV    = 74
-VAR $CC_HRP_HALF   = 65
-VAR $CC_HRP_PEEL   = 72
+VAR $CC_QC_REC = 53
+VAR $CC_QC_PLAY = 54
+VAR $CC_QC_REV = 55
+VAR $CC_QC_HALF = 51
+VAR $CC_QC_ONE = 50
+VAR $CC_QC_UNDO = 56
+VAR $CC_QC_UI = 48
+VAR $CC_QC_GIG = 46
+VAR $CC_QC_TUNER = 45
+VAR $CC_QC_TAP = 44
+VAR $CC_HRP_REC = 70
+VAR $CC_HRP_PLAY = 69
+VAR $CC_HRP_REV = 74
+VAR $CC_HRP_HALF = 65
+VAR $CC_HRP_PEEL = 72
 VAR $CC_HRP_UNPEEL = 123
-VAR $CC_HRP_TAP    = 64
+VAR $CC_HRP_TAP = 64
+VAR $CC_MICRO_BYP = 102
+VAR $CC_MICRO_TAP = 93
+VAR $S10_ACTIVE = false
+VAR $S10_HELD = false
+VAR $MICRO_ACTIVE_S = false
+VAR $MICRO_HELD = false
 
-VAR $CC_MICRO_BYP  = 102
-VAR $CC_MICRO_TAP  = 93    // Standard Hologram Tap CC
-
-VAR $S10_ACTIVE    = false // Tracking for Switch 10 Hold
-VAR $S10_HELD      = false
-
-VAR $MICRO_ACTIVE_S = false // Tracking for Microcosm Hold
-VAR $MICRO_HELD     = false
-
-// ******************************************************************
-// INITIALIZATION
-// ******************************************************************
-INIT_FCB = 
+INIT_FCB =
 {
-  GotoBank MENU
-  SwitchOff MOM_ACTIVE
-  $MidiChannel = 1
+GotoBank MENU
+SwitchOff MOM_ACTIVE
+$MidiChannel = 1
 }
 
-// ******************************************************************
-// TRIGGER CLICKS
-// ******************************************************************
-
-// --- MASTER ---
-TRIGGER_CLICK TAP_TEMPO = 
+TRIGGER_CLICK TAP_TEMPO =
 {
-  SendMidi QC CtrlChange $CC_QC_TAP 127
-  SendMidi HRP CtrlChange $CC_HRP_TAP 127
-  SendMidi MICRO CtrlChange $CC_MICRO_TAP 127
+SendMidi QC CtrlChange $CC_QC_TAP 127
+SendMidi HRP CtrlChange $CC_HRP_TAP 127
+SendMidi MICRO CtrlChange $CC_MICRO_TAP 127
 }
 
-TRIGGER_CLICK GLOBAL_STOP = 
+TRIGGER_CLICK GLOBAL_STOP =
 {
-  SendMidi QC CtrlChange $CC_QC_PLAY 0   // QC Looper Stop
-  SendMidi HRP CtrlChange $CC_HRP_PLAY 0  // HRP Looper Stop
-  SendMidi MICRO CtrlChange 31 127       // Microcosm Stop
-  SwitchOff QC_RECORDING
-  SwitchOff HRP_RECORDING
+SendMidi QC CtrlChange $CC_QC_PLAY 0
+SendMidi HRP CtrlChange $CC_HRP_PLAY 0
+SendMidi MICRO CtrlChange 31 127
+SwitchOff QC_RECORDING
+SwitchOff HRP_RECORDING
 }
 
-// --- GLOBAL SWITCH 10 (TAP / MENU / PANIC) ---
-// Validating Tap vs Hold using WaitWithoutBlocking (UnO2 Manual 4.6)
-// Increased to 20 (2s) to allow for extreme slow tap tempos (down to 30 BPM)
-TRIGGER_CLICK 10 = 
-{ 
-  $S10_ACTIVE = true
-  $S10_HELD = false
-  WaitWithoutBlocking 20 // 2s
-  if ($S10_ACTIVE)
-  {
-    $S10_HELD = true
-    if (#CURRENT_BANK == MENU) { SendTrigger GLOBAL_STOP }
-    else { GotoBank MENU }
-  }
-}
-
-TRIGGER_RELEASE 10 = 
+TRIGGER_CLICK S10_TRIGGER =
 {
-  if (!$S10_HELD) { SendTrigger TAP_TEMPO }
-  $S10_ACTIVE = false
+$S10_ACTIVE = true
+$S10_HELD = false
+WaitWithoutBlocking 20
+if ($S10_ACTIVE) {
+$S10_HELD = true
+if (#CURRENT_BANK == MENU) {
+SendTrigger GLOBAL_STOP
+}
+else {
+GotoBank MENU
+}
+}
 }
 
-// --- MICROCOSM SMART SWITCH ---
-// Tap: Toggle / Hold: Momentary Engage
-TRIGGER_CLICK TOGGLE_MICRO = 
+TRIGGER_RELEASE S10_TRIGGER =
 {
-  $MICRO_ACTIVE_S = true
-  $MICRO_HELD = false
-  WaitWithoutBlocking 4 // 400ms
-  if ($MICRO_ACTIVE_S)
-  {
-    $MICRO_HELD = true
-    SwitchOn MICRO_ACTIVE // Momentary ON
-  }
+if (!$S10_HELD) {
+SendTrigger TAP_TEMPO
+}
+$S10_ACTIVE = false
 }
 
-TRIGGER_RELEASE TOGGLE_MICRO = 
+TRIGGER_CLICK TOGGLE_MICRO =
 {
-  if ($MICRO_HELD)
-  {
-    SwitchOff MICRO_ACTIVE // Momentary OFF
-  }
-  else
-  {
-    // Tap: Toggle Logic
-    if (EFFECT_ON MICRO_ACTIVE) { SwitchOff MICRO_ACTIVE }
-    else { SwitchOn MICRO_ACTIVE }
-  }
-  $MICRO_ACTIVE_S = false
+$MICRO_ACTIVE_S = true
+$MICRO_HELD = false
+WaitWithoutBlocking 4
+if ($MICRO_ACTIVE_S) {
+$MICRO_HELD = true
+SwitchOn MICRO_ACTIVE
+}
 }
 
-// --- QC ACTIONS ---
-TRIGGER_CLICK QC_REC_ON  = SendMidi QC CtrlChange $CC_QC_REC 127
+TRIGGER_RELEASE TOGGLE_MICRO =
+{
+if ($MICRO_HELD) {
+SwitchOff MICRO_ACTIVE
+}
+else {
+if (EFFECT_ON MICRO_ACTIVE) {
+SwitchOff MICRO_ACTIVE
+}
+else {
+SwitchOn MICRO_ACTIVE
+}
+}
+$MICRO_ACTIVE_S = false
+}
+
+TRIGGER_CLICK QC_REC_ON = SendMidi QC CtrlChange $CC_QC_REC 127
 TRIGGER_CLICK QC_REC_OFF = SendMidi QC CtrlChange $CC_QC_REC 0
 
-// ******************************************************************
-// EFFECT LOGIC
-// ******************************************************************
-
-// --- QC RECORDING (With Momentary Support) ---
-EFFECT_ON QC_RECORDING = 
+EFFECT_ON QC_RECORDING =
 {
-  SendTrigger QC_REC_ON
-  if (EFFECT_ON QC_PLAYING) { SwitchOff QC_PLAYING }
+SendTrigger QC_REC_ON
+if (EFFECT_ON QC_PLAYING) {
+SwitchOff QC_PLAYING
 }
-EFFECT_OFF QC_RECORDING = 
-{
-  SendTrigger QC_REC_OFF
 }
+EFFECT_OFF QC_RECORDING = SendTrigger QC_REC_OFF
 
-// --- HRP RECORDING ---
 EFFECT_ON HRP_RECORDING = SendMidi HRP CtrlChange $CC_HRP_REC 127
 EFFECT_OFF HRP_RECORDING = SendMidi HRP CtrlChange $CC_HRP_REC 0
 
-// --- MICROCOSM ACTIVATION ---
-EFFECT_ON MICRO_ACTIVE  = SendMidi MICRO CtrlChange $CC_MICRO_BYP 127
+EFFECT_ON MICRO_ACTIVE = SendMidi MICRO CtrlChange $CC_MICRO_BYP 127
 EFFECT_OFF MICRO_ACTIVE = SendMidi MICRO CtrlChange $CC_MICRO_BYP 0
 
-// ******************************************************************
-// EXPRESSION PEDALS
-// ******************************************************************
-// User Specified: EXP A = Microcosm Mix, EXP B = HRP Mix
-// Mapping these to unique CCs for mioXM or QC internal assignment
-SWEEP MICRO_MIX_PEDAL = SendMidi QC CtrlChange 12 
-SWEEP HRP_MIX_PEDAL   = SendMidi QC CtrlChange 13
+SWEEP MICRO_MIX_PEDAL = SendMidi QC CtrlChange 12
+SWEEP HRP_MIX_PEDAL = SendMidi QC CtrlChange 13
 
-// ******************************************************************
-// EXTERNAL MIDI IN HANDLER (mioXM Ch 4 -> WINO2)
-// ******************************************************************
-TRIGGER_CLICK PANIC_STOP = MIDI_IN 4 CtrlChange 88 127 = SendTrigger GLOBAL_STOP
+PRESET PANIC_STOP = SendTrigger GLOBAL_STOP
 
-// --- MICROCOSM LOGIC ---
-EFFECT_ON MICRO_BYPASS = SendMidi MICRO CtrlChange $CC_MICRO_BYPASS 127
-EFFECT_OFF MICRO_BYPASS = SendMidi MICRO CtrlChange $CC_MICRO_BYPASS 0
-EFFECT_ON MICRO_HOLD = SendMidi MICRO CtrlChange $CC_MICRO_HOLD 127
-EFFECT_OFF MICRO_HOLD = SendMidi MICRO CtrlChange $CC_MICRO_HOLD 0
-EFFECT_ON MICRO_REV = SendMidi MICRO CtrlChange $CC_MICRO_REVERSE 127
-EFFECT_OFF MICRO_REV = SendMidi MICRO CtrlChange $CC_MICRO_REVERSE 0
+EFFECT_ON MICRO_BYPASS = SendMidi MICRO CtrlChange $CC_MICRO_BYP 127
+EFFECT_OFF MICRO_BYPASS = SendMidi MICRO CtrlChange $CC_MICRO_BYP 0
+EFFECT_ON MICRO_HOLD = SendMidi MICRO CtrlChange 118 127
+EFFECT_OFF MICRO_HOLD = SendMidi MICRO CtrlChange 118 0
+EFFECT_ON MICRO_REV = SendMidi MICRO CtrlChange 119 127
+EFFECT_OFF MICRO_REV = SendMidi MICRO CtrlChange 119 0
 EFFECT_ON MICRO_REC =
 {
-  if (EFFECT_ON MICRO_PLAY) { SwitchOff MICRO_PLAY }
-  SendTrigger MICRO_REC_GO
+if (EFFECT_ON MICRO_PLAY) {
+SwitchOff MICRO_PLAY
 }
-EFFECT_OFF MICRO_REC = { SendTrigger MICRO_REC_GO } // Microcosm typically toggles or needs play to stop rec
+SendTrigger MICRO_REC_GO
+}
+EFFECT_OFF MICRO_REC = SendTrigger MICRO_REC_GO
 EFFECT_ON MICRO_PLAY =
 {
-  if (EFFECT_ON MICRO_REC) { SwitchOff MICRO_REC }
-  SendTrigger MICRO_PLAY_GO
+if (EFFECT_ON MICRO_REC) {
+SwitchOff MICRO_REC
 }
-EFFECT_OFF MICRO_PLAY = { SendTrigger MICRO_STOP_GO }
-EFFECT_ON MICRO_STOP = { SendTrigger GLOBAL_STOP }
-EFFECT_OFF MICRO_STOP = {}
-EFFECT_ON MICRO_ERASE = { SendTrigger MICRO_ERASE_GO }
-EFFECT_OFF MICRO_ERASE = {}
+SendTrigger MICRO_PLAY_GO
+}
+EFFECT_OFF MICRO_PLAY = SendTrigger MICRO_STOP_GO
+EFFECT_ON MICRO_STOP = SendTrigger GLOBAL_STOP
+EFFECT_OFF MICRO_STOP = SendMidi MICRO CtrlChange 31 0
+EFFECT_ON MICRO_ERASE = SendTrigger MICRO_ERASE_GO
+EFFECT_OFF MICRO_ERASE = SendMidi MICRO CtrlChange 31 0
 
 EFFECT_ON HALFSPEED_ACTIVE = SendTrigger TOGGLE_HALFSPEED
 EFFECT_OFF HALFSPEED_ACTIVE = SendTrigger TOGGLE_HALFSPEED
@@ -285,46 +265,35 @@ EFFECT_ON REVERSE_ACTIVE = SendTrigger TOGGLE_REVERSE
 EFFECT_OFF REVERSE_ACTIVE = SendTrigger TOGGLE_REVERSE
 EFFECT_ON PLAYING =
 {
-  if (EFFECT_ON RECORDING) { SwitchOff RECORDING }
-  if (EFFECT_ON DUBBING) { SwitchOff DUBBING }
-  SendTrigger TOGGLE_PLAY
+if (EFFECT_ON RECORDING) {
+SwitchOff RECORDING
 }
-
-EFFECT_OFF PLAYING =
-{
-  SendTrigger TOGGLE_PLAY
-  $STOP = true
+if (EFFECT_ON DUBBING) {
+SwitchOff DUBBING
 }
+SendTrigger TOGGLE_PLAY
+}
+EFFECT_OFF PLAYING = SendTrigger TOGGLE_PLAY
 EFFECT_ON DUPLICATING = SendTrigger TOGGLE_DUPLICATE
 EFFECT_OFF DUPLICATING = SendTrigger TOGGLE_DUPLICATE
 EFFECT_ON ONESHOT_ACTIVE = SendTrigger TOGGLE_ONESHOT
 EFFECT_OFF ONESHOT_ACTIVE = SendTrigger TOGGLE_ONESHOT
 EFFECT_ON PUNCHED_IN =
-if (EFFECT_ON MOM_ACTIVE) SendTrigger PUNCH_IN_MOM
-else SendTrigger PUNCH_IN_ON
+{
+if (EFFECT_ON MOM_ACTIVE) {
+SendTrigger PUNCH_IN_MOM
+}
+else {
+SendTrigger PUNCH_IN_ON
+}
+}
 EFFECT_OFF PUNCHED_IN =
-if (EFFECT_ON MOM_ACTIVE) {}
-else SendTrigger PUNCH_IN_OFF
-PRESET QC_SETTINGS = GotoBank QC_SETTINGS
-//PRESET HRP_SETTINGS = GotoBank HRP_SETTINGS
-PRESET LSYNC_SELECT = GotoBank LSYNC_SELECT
-PRESET QCLOOP_FREE = GotoBank LSYNC_FREE
-/*PRESET HRP_FSBank1 = GotoBank HRP_FSBank_1
-PRESET HRP_FSBank2 = GotoBank HRP_FSBank 2
-PRESET HRP_BLKBank1 = GotoBank HRP_BLKBank_1
-PRESET HRPBLKBank2 = GotoBank HRP_FSBank 2
-*/
-PRESET SYNC_0 = GotoBank LSYNC_FREE
-PRESET SYNC_1 = GotoBank LSYNC_1
-PRESET SYNC_2 = GotoBank LSYNC_2
-PRESET SYNC_3 = GotoBank LSYNC_3
-PRESET SYNC_4 = GotoBank LSYNC_4
-PRESET SYNC_5 = GotoBank LSYNC_5
-PRESET SYNC_6 = GotoBank LSYNC_6
-PRESET SYNC_7 = GotoBank LSYNC_7
-PRESET SYNC_8 = GotoBank LSYNC_8
-PRESET SYNC_16 = GotoBank LSYNC_16
+{
+if (EFFECT_ON MOM_ACTIVE) {
+SendTrigger PUNCH_IN_OFF
+}
+}
+
+PRESET GOTO_MENU = GotoBank MENU
+PRESET GOTO_LOOPER = GotoBank LOOPER
 PRESET STOP_ALL = SendTrigger GLOBAL_STOP
-PRESET QC_SCENES = GotoBank QC_SCENES
-PRESET QC_STOMPS = GotoBank QC_STOMPS
-PRESET MICRO_CTRL = GotoBank MICRO_CTRL

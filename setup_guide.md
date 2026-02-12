@@ -18,6 +18,9 @@ The rig uses a **Serial MIDI Ring** for the floor devices and a
 **Floor Sequence:** `mioXM [OUT 2]` -> `GCP` -> `Stock FCB` -> `WINO2` -> `HRP`
 -> `mioXM [IN 1]`.
 
+**Core Processing:** `mioXM` connects to `QC` via **USB** and `Microcosm` via
+**DIN**.
+
 > [!IMPORTANT] All devices in the Floor Sequence must have **MIDI THRU** or
 > **MIDI MERGE** enabled to ensure messages reach the mioXM hub.
 
@@ -30,9 +33,8 @@ The rig uses a **Serial MIDI Ring** for the floor devices and a
 | Stock FCB1010 (THRU)        | WINO2 FCB1010 (IN)         | Floor Chain Loop      |
 | WINO2 FCB1010 (OUT)         | HeadRush Prime (IN)        | Floor Chain Loop      |
 | HeadRush Prime (OUT)        | Board Box (PASSTHROUGH IN) | Ring Return           |
-| mioXM [OUT 1]               | QuadCortex (IN)            | Core Control          |
+| mioXM [USB HOST 1]          | QuadCortex (USB)           | Core Control (BI-DIR) |
 | mioXM [OUT 3]               | Microcosm (IN)             | Core Control          |
-| QuadCortex (OUT)            | mioXM [IN 2]               | QC Producer (Sync/PC) |
 | Microcosm (OUT)             | mioXM [IN 3]               | MC Producer (Sync/PC) |
 
 ---
@@ -56,14 +58,29 @@ The rig uses a **Serial MIDI Ring** for the floor devices and a
 1.  **Factory Reset**: Press both **[SETUP MODE]** buttons -> Press
     **[UTILITY]** -> Press **[SELECT 2]** twice ("INIT MEM Y/N") -> Press
     **[+/YES]** twice.
-2.  **Per-Bank Mode**: Enter Setup -> `PRST/BNK` -> Set to `4 PRSTS`.
+2.  **Per-Bank Mode**: Enter Setup -> `UTILITY` -> Press **[SELECT 2]** -> Set
+    to `4 PRST/BANK`.
 3.  **MIDI Channel**: Set to **Channel 4**.
+4.  **Instant Access Programming (Stomps A-H)**:
+    - Enter Setup -> Press **[INSTANT ACCESS]**.
+    - For Button 1: Set to `CH01 CTL035` (QC Stomp A).
+    - For Button 2: Set to `CH01 CTL036` (QC Stomp B).
+    - ...repeat through Button 8: Set to `CH01 CTL042` (QC Stomp H).
+    - _Note: If IA 8 is needed for WINO2 Global Stop, set it to `CH04 CTL088`._
 
 #### Stock FCB1010
 
 1.  **Factory Reset**: Hold footswitches **1 and 6** during power-up.
 2.  **Global Channel**: Hold **DOWN** (2.5s) -> Press **UP** to `MIDI CH` ->
     Select **5** -> Hold **DOWN** to save.
+3.  **Programming Presets (HRP Blocks)**:
+    - Select a Preset (1-10).
+    - Hold **DOWN** (2.5s) to enter Edit mode.
+    - Press **UP** (Confirm) -> Press footswitch **1 (PC 1)** to disable PCs.
+    - Press footswitch **6 (CC 1)** to enable CC 1.
+    - Set CC number to **75** (Block 1 Toggle).
+    - Repeat for footswitches 2-8 (CCs 76-82).
+    - Hold **DOWN** (2.5s) to save.
 
 #### HeadRush Prime (HRP)
 
@@ -84,17 +101,16 @@ The mioXM acts as the central router and "translator" for the rig.
 
 | Input Port          | Destination | Rule              | Purpose                        |
 | :------------------ | :---------- | :---------------- | :----------------------------- |
-| **DIN IN 1** (Ring) | DIN OUT 1   | Ch 1 & 4          | Route GCP & WINO2 to QC        |
+| **DIN IN 1** (Ring) | USB HOST 1  | Ch 1 & 4          | Route GCP & WINO2 to QC        |
 |                     | DIN OUT 2   | Ch 2 (Remap 5->2) | Route WINO2 & Stock FCB to HRP |
 |                     | DIN OUT 3   | Ch 3 & 4          | Route GCP to Microcosm         |
 
 ### Filtering & Sync
 
-- **Filter MIDI Clock** on `DIN IN 2` (QC) and `DIN IN 3` (MC) to prevent
-  loop/jitter.
-- **Remap Rules**:
-    - **Stock FCB (Ch 5) PC 00-07** -> **CC 75-82** (HRP Block Toggles).
-    - **GCP (Ch 4) CC 87** -> **CC 88** (WINO2 Global Stop).
+- **Filter MIDI Clock** on `USB HOST 1` (QC) and `DIN IN 3` (MC) **INPUTS ONLY**
+  to prevent loop/jitter.
+- **System Filtering**: Ensure `DIN OUT 2` (HRP) has Clock enabled to act as
+  Master.
 
 ---
 
