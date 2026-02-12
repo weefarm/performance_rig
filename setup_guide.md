@@ -87,6 +87,11 @@ The rig uses a **Serial MIDI Ring** for the floor devices and a
 1.  **Clock Master**: Set `MIDI Clock Send: ON`.
 2.  **MIDI Thru**: Set `MIDI Thru: ON`.
 
+#### WINO2 FCB1010
+
+1.  **MIDI Thru**: Connect to Wino2 WiFi -> Open Web App (192.168.4.1) -> MIDI
+    Routing tab -> **Check "Enabling MIDI THRU"**.
+
 #### QuadCortex (QC)
 
 1.  **Clock Follower**: Set `MIDI Clock Receive: ON`, `Clock Out: OFF`.
