@@ -3,6 +3,8 @@ import time
 import usb.device
 from usb.device.midi import MIDIInterface
 from machine import Pin
+import neopixel
+import math
 
 # --- CONFIGURATION ---
 GCP_CHANNEL   = 4   # Incoming Channel for Ground Control Pro
@@ -19,7 +21,9 @@ STRICT_MIDI = False
 
 # --- HARDWARE ---
 led = Pin("LED", Pin.OUT)
-midi_received = False  # <--- NEW: Activity flag
+# WS2812 on GPIO 28
+pixel = neopixel.NeoPixel(machine.Pin(28), 1)
+midi_received = False  
 
 # --- TRANSLATOR LOGIC ---
 class RigTranslator(MIDIInterface):
@@ -94,29 +98,48 @@ try:
 except Exception as e:
     print("Warning: Could not set custom USB name:", e)
 
-# RESCUE WINDOW: You have 5 seconds after power-on to hit "STOP" in Thonny.
-# If you don't hit stop, and STRICT_MIDI is True, you will lose Serial access.
-print("Waiting 5s for Thonny/Serial (HIT STOP NOW TO EDIT)...")
-time.sleep(5)
-
-translator = RigTranslator()
-# builtin_driver=True allows Thonny to work but can confuse the mioXM.
-# builtin_driver=False makes the Pico a pure MIDI device (mioXM favorite).
-usb.device.get().init(translator, builtin_driver=(not STRICT_MIDI))
-
 print("Pico 2 W Translator Active...")
+
+# Animation constants
+BREATH_SPEED = 0.05
+brightness = 0
+angle = 0
+
+# Colors (R, G, B)
+RED   = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE  = (0, 0, 255)
+OFF   = (0, 0, 0)
+
+# 1. Start with RED during the 5s serial window
+pixel[0] = RED
+pixel.write()
+time.sleep(5)
 
 # Main loop
 while True:
     if midi_received:
-        # Long, unmistakable pulse for MIDI events
+        # High brightness BLUE blip for MIDI
+        pixel[0] = BLUE
+        pixel.write()
         led.on()
-        time.sleep(0.25) 
+        time.sleep(0.1) # Quick blip
         led.off()
         midi_received = False
+        # Reset angle so breath starts from bottom after a blip
+        angle = 0 
     else:
-        # Discrete heartbeat (short blip)
-        led.on()
-        time.sleep(0.01)
-        led.off()
-        time.sleep(0.99)
+        # Slow breathing GREEN
+        # use sine wave for smooth brightness (0 to 128 for subtlety)
+        brightness = int((math.sin(angle) + 1) * 64) 
+        pixel[0] = (0, brightness, 0)
+        pixel.write()
+        
+        # Internal LED heartbeat (keep for debugging)
+        if angle % 6.28 < 0.1: led.on()
+        else: led.off()
+        
+        angle += BREATH_SPEED
+        if angle > 628: angle = 0 # Prevent float overflow
+        
+        time.sleep(0.02) # ~50fps animation
