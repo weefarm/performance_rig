@@ -7,32 +7,51 @@ import neopixel
 import math
 
 # --- CONFIGURATION ---
-GCP_CHANNEL   = 4   # Incoming Channel for Ground Control Pro
-STOCK_CHANNEL = 5   # Incoming Channel for Stock FCB1010
+GCP_CHANNEL   = 4   
+STOCK_CHANNEL = 5   
 
-QC_CHANNEL    = 1    # Outgoing Channel for Quad Cortex
-HRP_CHANNEL   = 2    # Outgoing Channel for HeadRush Prime
-MC_CHANNEL    = 3    # Outgoing Channel for Microcosm
+QC_CHANNEL    = 1    
+HRP_CHANNEL   = 2    
+MC_CHANNEL    = 3    
+
+# Global flags for LED feedback
+midi_received   = False
+translated_sent = False
 
 # --- USB MODE ---
-# STRICT_MIDI = True  -> Pure MIDI device (mioXM compatible, no Thonny after boot)
-# STRICT_MIDI = False -> Composite device (Thonny works, but mioXM may not see MIDI)
-STRICT_MIDI = False
+STRICT_MIDI = False # Set to True for production with mioXM
 
 # --- HARDWARE ---
 led = Pin("LED", Pin.OUT)
-# WS2812 on GPIO 28
 pixel = neopixel.NeoPixel(machine.Pin(28), 1)
-midi_received = False  
+
+# Colors
+RED     = (255, 0, 0)
+GREEN   = (0, 255, 0)
+CYAN    = (0, 255, 255)
+MAGENTA = (255, 0, 255)
+WHITE   = (255, 255, 255)
 
 # --- TRANSLATOR LOGIC ---
 class RigTranslator(MIDIInterface):
-    def program_change(self, ch, pc):
-        self.send_event(0x0C, 0xC0 | (ch & 0x0F), pc & 0x7F, 0)
+    def tx_translated(self, status, ch, d1, d2):
+        """Sends a message and marks it as handled/magenta."""
+        global translated_sent
+        translated_sent = True
+        if status == 0xC0:
+            self.send_event(0x0C, 0xC0 | (ch & 0x0F), d1 & 0x7F, 0)
+        elif status == 0xB0:
+            self.control_change(ch, d1, d2)
+        else:
+            self.send_event(status >> 4, status | (ch & 0x0F), d1, d2)
+
+    def tx_passthrough(self, cin, midi0, midi1, midi2):
+        """Passes message through without translation flags (will flash Cyan/White)."""
+        self.send_event(cin, midi0, midi1, midi2)
 
     def on_midi_event(self, cin, midi0, midi1, midi2):
-        global midi_received
-        midi_received = True  
+        # global midi_received # Removed
+        # midi_received = True   # Removed
         
         status = midi0 & 0xF0
         channel = midi0 & 0x0F
@@ -40,102 +59,103 @@ class RigTranslator(MIDIInterface):
         # 1. Program Change (0xC0)
         if status == 0xC0:
             pc_num = midi1
-            # GCP (Ch 4) -> QC (Ch 1)
+            # --- GCP (Ch 4) -> QC (Ch 1) ---
             if channel == GCP_CHANNEL - 1:
-                if pc_num <= 7: # PC 0-7 -> CC 35-42
-                    self.control_change(QC_CHANNEL - 1, 35 + pc_num, 127)
-                elif pc_num >= 8 and pc_num <= 15: # PC 8-15 -> CC 80-87
-                    self.control_change(QC_CHANNEL - 1, 72 + pc_num, 127)
-            # FCB (Ch 5) -> HRP (Ch 2)
+                # Re-map first 16 buttons to Quad Cortex Scenes (80+)
+                if pc_num <= 7: # PC 0-7 -> CC 80-87 (SCENES A-H)
+                    self.tx_translated(0xB0, QC_CHANNEL - 1, 80 + pc_num, 127)
+                    pixel[0] = (0, 255, 255) # CYAN
+                elif pc_num >= 8 and pc_num <= 15: # Stomps block
+                    self.tx_translated(0xB0, QC_CHANNEL - 1, 72 + pc_num, 127)
+                    pixel[0] = (255, 0, 255) # MAGENTA
+                else:
+                    self.tx_passthrough(cin, midi0, midi1, midi2)
+                    pixel[0] = (255, 255, 255) # WHITE
+                pixel.write()
+            
+            # --- FCB (Ch 5) -> HRP (Ch 2) ---
             elif channel == STOCK_CHANNEL - 1:
+                pixel[0] = (0, 255, 0) # GREEN
+                pixel.write()
                 if pc_num <= 7: # PC 0-7 -> CC 75-82
-                    self.control_change(HRP_CHANNEL - 1, 75 + pc_num, 127)
+                    self.tx_translated(0xB0, HRP_CHANNEL - 1, 75 + pc_num, 127)
                 elif pc_num == 8: # Prev
-                    self.control_change(HRP_CHANNEL - 1, 17, 127)
+                    self.tx_translated(0xB0, HRP_CHANNEL - 1, 17, 127)
                 elif pc_num == 9: # Next
-                    self.control_change(HRP_CHANNEL - 1, 16, 127)
+                    self.tx_translated(0xB0, HRP_CHANNEL - 1, 16, 127)
+                else:
+                    self.tx_passthrough(cin, midi0, midi1, midi2)
+            
+            # --- ALL OTHER PCs ---
             else:
-                # PASSTHROUGH (other channels)
-                self.program_change(channel, pc_num)
+                self.tx_passthrough(cin, midi0, midi1, midi2)
 
         # 2. Control Change (0xB0)
         elif status == 0xB0:
             cc_num = midi1
             cc_val = midi2
-            # GCP Exp (Ch 4)
+            # --- GCP Exp (Ch 4) ---
             if channel == GCP_CHANNEL - 1:
+                pixel[0] = (0, 255, 255) # CYAN
+                pixel.write()
                 if cc_num == 1: # Wah
-                    self.control_change(QC_CHANNEL - 1, 1, cc_val)
+                    self.tx_translated(0xB0, QC_CHANNEL - 1, 1, cc_val)
                 elif cc_num == 2: # Vol
-                    self.control_change(QC_CHANNEL - 1, 2, cc_val)
-            # FCB Exp (Ch 5)
+                    self.tx_translated(0xB0, QC_CHANNEL - 1, 2, cc_val)
+                else:
+                    self.tx_passthrough(cin, midi0, midi1, midi2)
+            
+            # --- FCB Exp (Ch 5) ---
             elif channel == STOCK_CHANNEL - 1:
-                if cc_num == 7: # Exp A
-                    self.control_change(HRP_CHANNEL - 1, 61, cc_val)
-                elif cc_num == 27: # Exp B
-                    self.control_change(HRP_CHANNEL - 1, 62, cc_val)
+                if cc_num == 7: # Exp A -> HRP Vol
+                    self.tx_translated(0xB0, HRP_CHANNEL - 1, 61, cc_val)
+                elif cc_num == 27: # Exp B -> HRP Wah
+                    self.tx_translated(0xB0, HRP_CHANNEL - 1, 62, cc_val)
+                else:
+                    self.tx_passthrough(cin, midi0, midi1, midi2)
+            
+            # --- ALL OTHER CCs ---
             else:
-                # PASSTHROUGH
-                self.control_change(channel, cc_num, cc_val)
+                self.tx_passthrough(cin, midi0, midi1, midi2)
 
         # 3. Everything Else (Clock, SysEx, etc.)
         else:
-            # Fallback for non-channel data
-            try:
-                self.write(0, midi0, midi1, midi2)
-            except:
-                pass
-            
+            self.tx_passthrough(cin, midi0, midi1, midi2)
 
 # --- STARTUP ---
-# No custom USB name — let MicroPython use its default descriptors.
-# Custom names can confuse embedded USB hosts like the mioXM.
-
-print("Pico 2 W Translator - 5s rescue window (hit STOP in Thonny to edit)...")
-
-# Colors (R, G, B)
-RED   = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE  = (0, 0, 255)
-
-# Animation constants
-BREATH_SPEED = 0.05
-brightness = 0
-angle = 0
-
-# 1. Start with RED during the 5s rescue window
-#    To edit this file later: power-cycle the Pico, connect Thonny within 5s, hit STOP.
-pixel[0] = RED
+print("Pico 2 W Translator - Starting...")
+# Use Blue for idle to distinguish from "Off/Red"
+IDLE_COLOR = (0, 0, 20) # Very Dim Blue
+pixel[0] = (255, 0, 0) # RED
 pixel.write()
-time.sleep(5)
+time.sleep(0.5)
+pixel[0] = IDLE_COLOR
+pixel.write()
 
-# 2. Init USB MIDI (after rescue window, same as ee3e05d)
 translator = RigTranslator()
 usb.device.get().init(translator, builtin_driver=(not STRICT_MIDI))
 
-# Main loop
+# Rotation animation helper # Removed
+# angle = 0 # Removed
+
+# Main loop - Cooldown only
 while True:
-    if midi_received:
-        # High brightness BLUE blip for MIDI
-        pixel[0] = BLUE
+    # is_open = usb.device.get().is_open() # Removed
+    
+    if pixel[0] != IDLE_COLOR:
+        time.sleep_ms(100)
+        pixel[0] = IDLE_COLOR
         pixel.write()
-        led.on()
-        time.sleep(0.1) # Quick blip
-        led.off()
-        midi_received = False
-        # Reset angle so breath starts from bottom after a blip
-        angle = 0 
-    else:
-        # Slow breathing GREEN
-        brightness = int((math.sin(angle) + 1) * 64) 
-        pixel[0] = (0, brightness, 0)
-        pixel.write()
+    # else: # Removed
+        # Solid Dim Green if open, Pulsing BLUE/CYAN if waiting # Removed
+        # if is_open: # Removed
+            # pixel[0] = (0, 40, 0) # Brighter Dim Green # Removed
+        # else: # Removed
+            # Pulsing BLUE/CYAN to indicate waiting for host # Removed
+            # pulse = int((math.sin(angle) + 1) * 32) # Removed
+            # pixel[0] = (0, pulse, pulse) # Pulsing Cyan # Removed
         
-        # Internal LED heartbeat (keep for debugging)
-        if angle % 6.28 < 0.1: led.on()
-        else: led.off()
-        
-        angle += BREATH_SPEED
-        if angle > 628: angle = 0 # Prevent float overflow
-        
-        time.sleep(0.02) # ~50fps animation
+        # pixel.write() # Removed
+        # angle += 0.1 # Removed
+        # if angle > 628: angle = 0 # Removed
+    time.sleep_ms(10)
