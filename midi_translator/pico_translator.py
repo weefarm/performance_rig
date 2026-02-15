@@ -15,9 +15,9 @@ HRP_CHANNEL   = 2    # Outgoing Channel for HeadRush Prime
 MC_CHANNEL    = 3    # Outgoing Channel for Microcosm
 
 # --- USB MODE ---
-# If your mioXM shows "Board in FS mode", it is talking to the Serial port.
-# SET THIS TO TRUE to hide the Serial port and force a pure MIDI identity.
-STRICT_MIDI = False 
+# STRICT_MIDI = True  -> Pure MIDI device (mioXM compatible, no Thonny after boot)
+# STRICT_MIDI = False -> Composite device (Thonny works, but mioXM may not see MIDI)
+STRICT_MIDI = False
 
 # --- HARDWARE ---
 led = Pin("LED", Pin.OUT)
@@ -27,17 +27,15 @@ midi_received = False
 
 # --- TRANSLATOR LOGIC ---
 class RigTranslator(MIDIInterface):
+    def program_change(self, ch, pc):
+        self.send_event(0x0C, 0xC0 | (ch & 0x0F), pc & 0x7F, 0)
+
     def on_midi_event(self, cin, midi0, midi1, midi2):
         global midi_received
         midi_received = True  
         
         status = midi0 & 0xF0
         channel = midi0 & 0x0F
-        
-        # Calculate the correct packed 4-byte header (Cable Index Number << 4 | Code Index Number)
-        # Most common channel messages use the status nibble as the CIN.
-        # This ensures we send valid USB MIDI packets for ALL traffic.
-        cin_packed = (cin << 4) | (status >> 4)
         
         # 1. Program Change (0xC0)
         if status == 0xC0:
@@ -57,7 +55,7 @@ class RigTranslator(MIDIInterface):
                 elif pc_num == 9: # Next
                     self.control_change(HRP_CHANNEL - 1, 16, 127)
             else:
-                # PASSTHROUGH (Ch 10, etc)
+                # PASSTHROUGH (other channels)
                 self.program_change(channel, pc_num)
 
         # 2. Control Change (0xB0)
@@ -90,31 +88,30 @@ class RigTranslator(MIDIInterface):
             
 
 # --- STARTUP ---
-# Custom USB Identity (Optional)
-try:
-    # On RP2350, the product string must be set via low-level config descriptors
-    # Index 0x02 is the standard Product String index for MicroPython
-    machine.USBDevice().config(desc_strs={0x02: "Pico 2 W Translator"})
-except Exception as e:
-    print("Warning: Could not set custom USB name:", e)
+# No custom USB name — let MicroPython use its default descriptors.
+# Custom names can confuse embedded USB hosts like the mioXM.
 
-print("Pico 2 W Translator Active...")
+print("Pico 2 W Translator - 5s rescue window (hit STOP in Thonny to edit)...")
+
+# Colors (R, G, B)
+RED   = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE  = (0, 0, 255)
 
 # Animation constants
 BREATH_SPEED = 0.05
 brightness = 0
 angle = 0
 
-# Colors (R, G, B)
-RED   = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE  = (0, 0, 255)
-OFF   = (0, 0, 0)
-
-# 1. Start with RED during the 5s serial window
+# 1. Start with RED during the 5s rescue window
+#    To edit this file later: power-cycle the Pico, connect Thonny within 5s, hit STOP.
 pixel[0] = RED
 pixel.write()
 time.sleep(5)
+
+# 2. Init USB MIDI (after rescue window, same as ee3e05d)
+translator = RigTranslator()
+usb.device.get().init(translator, builtin_driver=(not STRICT_MIDI))
 
 # Main loop
 while True:
@@ -130,7 +127,6 @@ while True:
         angle = 0 
     else:
         # Slow breathing GREEN
-        # use sine wave for smooth brightness (0 to 128 for subtlety)
         brightness = int((math.sin(angle) + 1) * 64) 
         pixel[0] = (0, brightness, 0)
         pixel.write()
